@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CateringManagementPlatform.DAL.Entities.People
 {
     [Table("Guests")]
     public class Guest : Person
     {
-        public int Agg { get; set; }
+        public string Phone { get; set; }
     }
 }
