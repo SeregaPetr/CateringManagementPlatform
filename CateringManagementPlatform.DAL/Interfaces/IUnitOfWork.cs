@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Entities.People;
 using CateringManagementPlatform.DAL.Entities.People.Employees;
@@ -23,6 +22,10 @@ namespace CateringManagementPlatform.DAL.Interfaces
         public IRepository<Status> Statuses { get; }
         public IRepository<Table> Tables { get; }
         public IRepository<Waiter> Waiters { get; }
-        void Save();
+
+        Task SaveAsync();
+
+        //public void Commit()
+        //public void Rollback()
     }
 }

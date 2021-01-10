@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities.People.Employees;
 using CateringManagementPlatform.DAL.Interfaces;
@@ -10,45 +10,48 @@ namespace CateringManagementPlatform.DAL.Repositories
 {
     public class BarmanRepository : IRepository<Barman>
     {
-        private ApplicationContext db;
+        private readonly ApplicationContext _context;
 
         public BarmanRepository(ApplicationContext context)
         {
-            db = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void Create(Barman barman)
         {
-            db.Barmen.Add(barman);
-        }
-
-        public void Delete(int id)
-        {
-            Barman barman = db.Barmen.Find(id);
-            if (barman != null)
+            if (barman == null)
             {
-                db.Barmen.Remove(barman);
+                throw new ArgumentNullException(nameof(barman));
             }
+            _context.Barmen.Add(barman);
         }
 
-        public IEnumerable<Barman> Find(Func<Barman, bool> predicate)
+        public void Delete(Barman barman)
         {
-            return db.Barmen.Include(b => b.Department).Where(predicate).ToList();
+            if (barman == null)
+            {
+                throw new ArgumentNullException(nameof(barman));
+            }
+            _context.Barmen.Remove(barman);
         }
 
-        public Barman GetById(int id)
+        public async Task<Barman> GetByIdAsync(int id)
         {
-            return db.Barmen.Find(id);
+            return await _context.Barmen.Include(b => b.Department).AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public IEnumerable<Barman> GetAll()
+        public async Task<IEnumerable<Barman>> GetAllAsync()
         {
-            return db.Barmen.Include(b => b.Department);
+            return await _context.Barmen.Include(b => b.Department).AsNoTracking().ToListAsync();
         }
 
         public void Update(Barman barman)
         {
-            db.Entry(barman).State = EntityState.Modified;
+            if (barman == null)
+            {
+                throw new ArgumentNullException(nameof(barman));
+            }
+            _context.Barmen.Update(barman);
         }
     }
 }

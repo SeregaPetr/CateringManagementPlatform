@@ -7,19 +7,12 @@ namespace CateringManagementPlatform.DAL.EF
 {
     public class ApplicationContext : DbContext
     {
-        private string _connectionString;
-        public ApplicationContext(string connectionString)
+        public ApplicationContext(DbContextOptions<ApplicationContext> opt) : base(opt)
         {
-            _connectionString = connectionString;
-            //  Database.EnsureDeleted();
+           // Database.EnsureDeleted();
             Database.EnsureCreated();
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            // optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=cateringManagementPlatformDB;Trusted_Connection=True;");
-            optionsBuilder.UseSqlServer(_connectionString);
 
-        }
         public DbSet<Barman> Barmen { get; set; }
         public DbSet<Chef> Chefs { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -35,6 +28,5 @@ namespace CateringManagementPlatform.DAL.EF
         public DbSet<PaymentType> PaymentTypes { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Table> Tables { get; set; }
-
     }
 }

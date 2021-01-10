@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
@@ -9,11 +10,11 @@ namespace CateringManagementPlatform.DAL.Repositories
 {
     public class OrderLineRepository : IRepository<OrderLine>
     {
-        private ApplicationContext db;
+        private readonly ApplicationContext _context;
 
         public OrderLineRepository(ApplicationContext context)
         {
-            db = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void Create(OrderLine item)
@@ -21,22 +22,17 @@ namespace CateringManagementPlatform.DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public void Delete(OrderLine item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<OrderLine> Find(Func<OrderLine, bool> predicate)
+        public Task<IEnumerable<OrderLine>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public OrderLine GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<OrderLine> GetAll()
+        public Task<OrderLine> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

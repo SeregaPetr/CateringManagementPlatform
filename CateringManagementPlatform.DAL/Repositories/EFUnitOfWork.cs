@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Entities.People;
@@ -9,35 +10,36 @@ namespace CateringManagementPlatform.DAL.Repositories
 {
     public class EFUnitOfWork : IUnitOfWork
     {
-        private ApplicationContext db;
-        private BarmanRepository barmenRepository;
-        private ChefRepository chefRepository;
-        private DepartmentRepository departmentRepository;
-        private DishRepository dishRepository;
-        private GuestRepository guestRepository;
-        private ManagerRepository managerRepository;
-        private MenuCategoryRepository menuCategoryRepository;
-        private OrderLineRepository orderLineRepository;
-        private OrderRepository orderRepository;
-        private PaymentTypeRepository paymentTypeRepository;
-        private StatusRepository statusRepository;
-        private TableRepository tableRepository;
-        private WaiterRepository waiterRepository;
+        private readonly ApplicationContext _context;
 
-        public EFUnitOfWork(string connectionString)
+        private BarmanRepository _barmenRepository;
+        private ChefRepository _chefRepository;
+        private DepartmentRepository _departmentRepository;
+        private DishRepository _dishRepository;
+        private GuestRepository _guestRepository;
+        private ManagerRepository _managerRepository;
+        private MenuCategoryRepository _menuCategoryRepository;
+        private OrderLineRepository _orderLineRepository;
+        private OrderRepository _orderRepository;
+        private PaymentTypeRepository _paymentTypeRepository;
+        private StatusRepository _statusRepository;
+        private TableRepository _tableRepository;
+        private WaiterRepository _waiterRepository;
+
+        public EFUnitOfWork(ApplicationContext context)
         {
-            db = new ApplicationContext(connectionString);
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public IRepository<Barman> Barmen
         {
             get
             {
-                if (barmenRepository == null)
+                if (_barmenRepository == null)
                 {
-                    barmenRepository = new BarmanRepository(db);
+                    _barmenRepository = new BarmanRepository(_context);
                 }
-                return barmenRepository;
+                return _barmenRepository;
             }
         }
 
@@ -45,11 +47,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (chefRepository == null)
+                if (_chefRepository == null)
                 {
-                    chefRepository = new ChefRepository(db);
+                    _chefRepository = new ChefRepository(_context);
                 }
-                return chefRepository;
+                return _chefRepository;
             }
         }
 
@@ -57,11 +59,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (departmentRepository == null)
+                if (_departmentRepository == null)
                 {
-                    departmentRepository = new DepartmentRepository(db);
+                    _departmentRepository = new DepartmentRepository(_context);
                 }
-                return departmentRepository;
+                return _departmentRepository;
             }
         }
 
@@ -69,11 +71,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (dishRepository == null)
+                if (_dishRepository == null)
                 {
-                    dishRepository = new DishRepository(db);
+                    _dishRepository = new DishRepository(_context);
                 }
-                return dishRepository;
+                return _dishRepository;
             }
         }
 
@@ -81,11 +83,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (guestRepository == null)
+                if (_guestRepository == null)
                 {
-                    guestRepository = new GuestRepository(db);
+                    _guestRepository = new GuestRepository(_context);
                 }
-                return guestRepository;
+                return _guestRepository;
             }
         }
 
@@ -93,11 +95,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (managerRepository == null)
+                if (_managerRepository == null)
                 {
-                    managerRepository = new ManagerRepository(db);
+                    _managerRepository = new ManagerRepository(_context);
                 }
-                return managerRepository;
+                return _managerRepository;
             }
         }
 
@@ -105,11 +107,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (menuCategoryRepository == null)
+                if (_menuCategoryRepository == null)
                 {
-                    menuCategoryRepository = new MenuCategoryRepository(db);
+                    _menuCategoryRepository = new MenuCategoryRepository(_context);
                 }
-                return menuCategoryRepository;
+                return _menuCategoryRepository;
             }
         }
 
@@ -117,11 +119,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (orderLineRepository == null)
+                if (_orderLineRepository == null)
                 {
-                    orderLineRepository = new OrderLineRepository(db);
+                    _orderLineRepository = new OrderLineRepository(_context);
                 }
-                return orderLineRepository;
+                return _orderLineRepository;
             }
         }
 
@@ -129,11 +131,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (orderRepository == null)
+                if (_orderRepository == null)
                 {
-                    orderRepository = new OrderRepository(db);
+                    _orderRepository = new OrderRepository(_context);
                 }
-                return orderRepository;
+                return _orderRepository;
             }
         }
 
@@ -141,11 +143,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (paymentTypeRepository == null)
+                if (_paymentTypeRepository == null)
                 {
-                    paymentTypeRepository = new PaymentTypeRepository(db);
+                    _paymentTypeRepository = new PaymentTypeRepository(_context);
                 }
-                return paymentTypeRepository;
+                return _paymentTypeRepository;
             }
         }
 
@@ -153,11 +155,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (statusRepository == null)
+                if (_statusRepository == null)
                 {
-                    statusRepository = new StatusRepository(db);
+                    _statusRepository = new StatusRepository(_context);
                 }
-                return statusRepository;
+                return _statusRepository;
             }
         }
 
@@ -165,11 +167,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (tableRepository == null)
+                if (_tableRepository == null)
                 {
-                    tableRepository = new TableRepository(db);
+                    _tableRepository = new TableRepository(_context);
                 }
-                return tableRepository;
+                return _tableRepository;
             }
         }
 
@@ -177,17 +179,27 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             get
             {
-                if (waiterRepository == null)
+                if (_waiterRepository == null)
                 {
-                    waiterRepository = new WaiterRepository(db);
+                    _waiterRepository = new WaiterRepository(_context);
                 }
-                return waiterRepository;
+                return _waiterRepository;
             }
         }
 
-        public void Save()
+        //public void Commit()
+        //{
+        //    _context.SaveChanges();
+        //}
+
+        //public void Rollback()
+        //{
+        //    _context.Dispose();
+        //}
+
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         private bool disposed = false;
@@ -198,7 +210,7 @@ namespace CateringManagementPlatform.DAL.Repositories
             {
                 if (disposing)
                 {
-                    db.Dispose();
+                    _context.Dispose();
                 }
                 disposed = true;
             }

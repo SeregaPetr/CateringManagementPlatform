@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
@@ -9,11 +9,11 @@ namespace CateringManagementPlatform.DAL.Repositories
 {
     public class StatusRepository : IRepository<Status>
     {
-        private ApplicationContext db;
+        private readonly ApplicationContext _context;
 
         public StatusRepository(ApplicationContext context)
         {
-            db = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void Create(Status item)
@@ -21,22 +21,17 @@ namespace CateringManagementPlatform.DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public void Delete(Status item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Status> Find(Func<Status, bool> predicate)
+        public Task<IEnumerable<Status>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Status GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Status> GetAll()
+        public Task<Status> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

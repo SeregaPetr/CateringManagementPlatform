@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CateringManagementPlatform.DAL.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll();
-        T GetById(int id);
-        IEnumerable<T> Find(Func<T, Boolean> predicate);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByIdAsync(int id);
         void Create(T item);
         void Update(T item);
-        void Delete(int id);
+        void Delete(T item);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities.People.Employees;
 using CateringManagementPlatform.DAL.Interfaces;
@@ -9,11 +9,11 @@ namespace CateringManagementPlatform.DAL.Repositories
 {
     public class WaiterRepository : IRepository<Waiter>
     {
-        private ApplicationContext db;
+        private readonly ApplicationContext _context;
 
         public WaiterRepository(ApplicationContext context)
         {
-            db = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void Create(Waiter item)
@@ -21,22 +21,17 @@ namespace CateringManagementPlatform.DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public void Delete(Waiter item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Waiter> Find(Func<Waiter, bool> predicate)
+        public Task<IEnumerable<Waiter>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Waiter GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Waiter> GetAll()
+        public Task<Waiter> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

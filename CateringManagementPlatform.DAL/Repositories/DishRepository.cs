@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
@@ -9,11 +10,11 @@ namespace CateringManagementPlatform.DAL.Repositories
 {
     public class DishRepository : IRepository<Dish>
     {
-        private ApplicationContext db;
+        private readonly ApplicationContext _context;
 
         public DishRepository(ApplicationContext context)
         {
-            db = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void Create(Dish item)
@@ -21,22 +22,17 @@ namespace CateringManagementPlatform.DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public void Delete(Dish item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Dish> Find(Func<Dish, bool> predicate)
+        public Task<IEnumerable<Dish>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Dish GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Dish> GetAll()
+        public Task<Dish> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

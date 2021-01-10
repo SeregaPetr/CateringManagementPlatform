@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
@@ -9,11 +10,11 @@ namespace CateringManagementPlatform.DAL.Repositories
 {
     public class PaymentTypeRepository : IRepository<PaymentType>
     {
-        private ApplicationContext db;
+        private readonly ApplicationContext _context;
 
         public PaymentTypeRepository(ApplicationContext context)
         {
-            db = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void Create(PaymentType item)
@@ -21,22 +22,17 @@ namespace CateringManagementPlatform.DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public void Delete(PaymentType item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<PaymentType> Find(Func<PaymentType, bool> predicate)
+        public Task<IEnumerable<PaymentType>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public PaymentType GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<PaymentType> GetAll()
+        public Task<PaymentType> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
