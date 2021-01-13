@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class StatusRepository : IRepository<Status>
+    internal class StatusRepository : IRepository<Status>
     {
         private readonly ApplicationContext _context;
 
@@ -16,29 +17,35 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(Status item)
+        public void Create(Status status)
         {
-            throw new NotImplementedException();
+            _context.Statuses.Add(status);
         }
 
-        public void Delete(Status item)
+        public void Delete(Status status)
         {
-            throw new NotImplementedException();
+            _context.Statuses.Remove(status);
         }
 
-        public Task<IEnumerable<Status>> GetAllAsync()
+        public async Task<IEnumerable<Status>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Statuses
+                 .Include(s => s.OrderLines)
+                 .Include(s => s.Orders)
+                 .AsNoTracking().ToListAsync();
         }
 
-        public Task<Status> GetByIdAsync(int id)
+        public async Task<Status> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Statuses
+                 .Include(s => s.OrderLines)
+                 .Include(s => s.Orders)
+                 .AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public void Update(Status item)
+        public void Update(Status status)
         {
-            throw new NotImplementedException();
+            _context.Statuses.Update(status);
         }
     }
 }

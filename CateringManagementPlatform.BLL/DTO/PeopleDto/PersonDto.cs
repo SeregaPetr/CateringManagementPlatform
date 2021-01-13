@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace CateringManagementPlatform.BLL.DTO.People
+namespace CateringManagementPlatform.BLL.DTO.PeopleDto
 {
     public class PersonDto
     {
-        public int Id { get; set; }
+        //   public int Id { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]

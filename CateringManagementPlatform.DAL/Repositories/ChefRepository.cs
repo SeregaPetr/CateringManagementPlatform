@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities.People.Employees;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class ChefRepository : IRepository<Chef>
+    internal class ChefRepository : IRepository<Chef>
     {
         private readonly ApplicationContext _context;
 
@@ -17,29 +17,33 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(Chef item)
+        public void Create(Chef chef)
         {
-            throw new NotImplementedException();
+            _context.Chefs.Add(chef);
         }
 
-        public void Delete(Chef item)
+        public void Delete(Chef chef)
         {
-            throw new NotImplementedException();
+            _context.Chefs.Remove(chef);
         }
 
-        public Task<IEnumerable<Chef>> GetAllAsync()
+        public async Task<IEnumerable<Chef>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Chefs
+                .Include(c => c.Department)
+                .AsNoTracking().ToListAsync();
         }
 
-        public Task<Chef> GetByIdAsync(int id)
+        public async Task<Chef> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Chefs
+               .Include(c => c.Department)
+               .AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public void Update(Chef item)
+        public void Update(Chef chef)
         {
-            throw new NotImplementedException();
+            _context.Chefs.Update(chef);
         }
     }
 }

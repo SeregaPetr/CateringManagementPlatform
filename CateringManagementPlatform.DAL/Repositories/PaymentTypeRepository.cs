@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class PaymentTypeRepository : IRepository<PaymentType>
+    internal class PaymentTypeRepository : IRepository<PaymentType>
     {
         private readonly ApplicationContext _context;
 
@@ -17,29 +18,33 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(PaymentType item)
+        public void Create(PaymentType paymentType)
         {
-            throw new NotImplementedException();
+            _context.PaymentTypes.Add(paymentType);
         }
 
-        public void Delete(PaymentType item)
+        public void Delete(PaymentType paymentType)
         {
-            throw new NotImplementedException();
+            _context.PaymentTypes.Remove(paymentType);
         }
 
-        public Task<IEnumerable<PaymentType>> GetAllAsync()
+        public async Task<IEnumerable<PaymentType>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.PaymentTypes
+                .Include(p => p.Orders)
+                .AsNoTracking().ToListAsync();
         }
 
-        public Task<PaymentType> GetByIdAsync(int id)
+        public async Task<PaymentType> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.PaymentTypes
+               .Include(p => p.Orders)
+               .AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public void Update(PaymentType item)
+        public void Update(PaymentType paymentType)
         {
-            throw new NotImplementedException();
+            _context.PaymentTypes.Update(paymentType);
         }
     }
 }

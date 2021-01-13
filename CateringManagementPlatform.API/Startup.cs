@@ -1,15 +1,14 @@
 using System;
+//using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using CateringManagementPlatform.BLL;
-using CateringManagementPlatform.BLL.DTO.People.Employees;
 using CateringManagementPlatform.BLL.Interfaces;
 using CateringManagementPlatform.BLL.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-//using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 
 namespace CateringManagementPlatform.API
 {
@@ -32,7 +31,9 @@ namespace CateringManagementPlatform.API
 
             services.AddUnitOfWork();
 
-            services.AddScoped<IService<BarmanDto>, BarmanService>();
+            services.AddScoped<IBarmanService, BarmanService>();
+            services.AddScoped<ITableService, TableService>();
+            services.AddScoped<IWaiterService, WaiterService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

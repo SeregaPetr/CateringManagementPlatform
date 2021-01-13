@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
-using CateringManagementPlatform.BLL.DTO.People.Employees;
+﻿using AutoMapper;
+using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.BarmanDtos;
 using CateringManagementPlatform.DAL.Entities.People.Employees;
 
 namespace CateringManagementPlatform.BLL.Profiles
@@ -11,12 +8,10 @@ namespace CateringManagementPlatform.BLL.Profiles
     {
         public BarmanProfile()
         {
-            CreateMap<Barman, BarmanDto>().ForMember("DepartmentId", opt => opt.MapFrom(b => b.Department.Id))
+            CreateMap<BarmanCreateDto, Barman>();
+            CreateMap<BarmanUpdateDto, Barman>();
+            CreateMap<Barman, BarmanReadDto>()
                 .ForMember("NameDepartment", opt => opt.MapFrom(b => b.Department.NameDepartment));
-
-
-            CreateMap<BarmanDto, Barman>();
-           
         }
     }
 }

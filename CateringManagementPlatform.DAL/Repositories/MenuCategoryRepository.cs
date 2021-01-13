@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class MenuCategoryRepository : IRepository<MenuCategory>
+    internal class MenuCategoryRepository : IRepository<MenuCategory>
     {
         private readonly ApplicationContext _context;
 
@@ -17,29 +17,33 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(MenuCategory item)
+        public void Create(MenuCategory menuCategory)
         {
-            throw new NotImplementedException();
+            _context.MenuCategories.Add(menuCategory);
         }
 
-        public void Delete(MenuCategory item)
+        public void Delete(MenuCategory menuCategory)
         {
-            throw new NotImplementedException();
+            _context.MenuCategories.Remove(menuCategory);
         }
 
-        public Task<IEnumerable<MenuCategory>> GetAllAsync()
+        public async Task<IEnumerable<MenuCategory>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.MenuCategories
+                .Include(m => m.Menu)
+                .AsNoTracking().ToListAsync();
         }
 
-        public Task<MenuCategory> GetByIdAsync(int id)
+        public async Task<MenuCategory> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.MenuCategories
+                .Include(m => m.Menu)
+                .AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public void Update(MenuCategory item)
+        public void Update(MenuCategory menuCategory)
         {
-            throw new NotImplementedException();
+            _context.MenuCategories.Update(menuCategory);
         }
     }
 }

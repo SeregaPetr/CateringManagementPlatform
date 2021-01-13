@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class DepartmentRepository : IRepository<Department>
+    internal class DepartmentRepository : IRepository<Department>
     {
         private readonly ApplicationContext _context;
 
@@ -17,29 +17,29 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(Department item)
+        public void Create(Department department)
         {
-            throw new NotImplementedException();
+            _context.Departments.Add(department);
         }
 
-        public void Delete(Department item)
+        public void Delete(Department department)
         {
-            throw new NotImplementedException();
+            _context.Departments.Remove(department);
         }
 
-        public Task<IEnumerable<Department>> GetAllAsync()
+        public async Task<IEnumerable<Department>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Departments.AsNoTracking().ToListAsync();
         }
 
-        public Task<Department> GetByIdAsync(int id)
+        public async Task<Department> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Departments.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
         }
 
-        public void Update(Department item)
+        public void Update(Department department)
         {
-            throw new NotImplementedException();
+            _context.Departments.Update(department);
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class DishRepository : IRepository<Dish>
+    internal class DishRepository : IRepository<Dish>
     {
         private readonly ApplicationContext _context;
 
@@ -17,29 +17,35 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(Dish item)
+        public void Create(Dish dish)
         {
-            throw new NotImplementedException();
+            _context.Dishes.Add(dish);
         }
 
-        public void Delete(Dish item)
+        public void Delete(Dish dish)
         {
-            throw new NotImplementedException();
+            _context.Dishes.Remove(dish);
         }
 
-        public Task<IEnumerable<Dish>> GetAllAsync()
+        public async Task<IEnumerable<Dish>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Dishes
+                .Include(d => d.MenuCategory)
+                .Include(d => d.Department)
+                .AsNoTracking().ToListAsync();
         }
 
-        public Task<Dish> GetByIdAsync(int id)
+        public async Task<Dish> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Dishes
+                .Include(d => d.MenuCategory)
+                .Include(d => d.Department)
+                .AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
         }
 
-        public void Update(Dish item)
+        public void Update(Dish dish)
         {
-            throw new NotImplementedException();
+            _context.Dishes.Update(dish);
         }
     }
 }

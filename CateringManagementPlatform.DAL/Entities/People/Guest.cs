@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CateringManagementPlatform.DAL.Entities.People
 {
@@ -6,5 +7,7 @@ namespace CateringManagementPlatform.DAL.Entities.People
     public class Guest : Person
     {
         public string Phone { get; set; }
+
+        public ICollection<Table> Tables { get; set; }
     }
 }

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using CateringManagementPlatform.DAL.Entities.People;
-using CateringManagementPlatform.DAL.Entities.People.Employees;
 
-namespace CateringManagementPlatform.DAL.Entities
+namespace CateringManagementPlatform.BLL.DTO.TableDtos
 {
-    public class Table
+    public class TableUpdateDto
     {
-        [Key]
         public int Id { get; set; }
         [Required]
         public int NumberTable { get; set; }
@@ -18,11 +14,7 @@ namespace CateringManagementPlatform.DAL.Entities
         [Required]
         public int CapacityTable { get; set; }
         public int? NumberGuests { get; set; }
-
         public int? WaiterId { get; set; }
-        public Waiter Waiter { get; set; }
-        public int? Guestid { get; set; }
-        public Guest Guest { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public int? GuestId { get; set; }
     }
 }

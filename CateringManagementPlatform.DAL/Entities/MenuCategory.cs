@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace CateringManagementPlatform.DAL.Entities
 {
@@ -11,8 +9,8 @@ namespace CateringManagementPlatform.DAL.Entities
         [Required]
         public string NameCategory { get; set; }
 
-        public int? DepartmentId { get; set; }
-        public Department Department { get; set; }
+        public int? MenuId { get; set; }
+        public Menu Menu { get; set; }
         public ICollection<Dish> Dishes { get; set; }
     }
 }

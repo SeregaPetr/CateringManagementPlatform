@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class OrderRepository : IRepository<Order>
+    internal class OrderRepository : IRepository<Order>
     {
         private readonly ApplicationContext _context;
 
@@ -17,29 +18,33 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(Order item)
+        public void Create(Order order)
         {
-            throw new NotImplementedException();
+            _context.Orders.Add(order);
         }
 
-        public void Delete(Order item)
+        public void Delete(Order order)
         {
-            throw new NotImplementedException();
+            _context.Orders.Remove(order);
         }
 
-        public Task<IEnumerable<Order>> GetAllAsync()
+        public async Task<IEnumerable<Order>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Orders
+                .Include(o => o.OrderLines)
+                .AsNoTracking().ToListAsync();
         }
 
-        public Task<Order> GetByIdAsync(int id)
+        public async Task<Order> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Orders
+                .Include(o => o.OrderLines)
+                .AsNoTracking().FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(Order item)
+        public void Update(Order order)
         {
-            throw new NotImplementedException();
+            _context.Orders.Update(order);
         }
     }
 }

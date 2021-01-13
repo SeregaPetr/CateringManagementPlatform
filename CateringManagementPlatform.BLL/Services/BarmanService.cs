@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using CateringManagementPlatform.BLL.DTO.People.Employees;
+using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.BarmanDtos;
 using CateringManagementPlatform.BLL.Infrastructure;
 using CateringManagementPlatform.BLL.Interfaces;
+using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Entities.People.Employees;
 using CateringManagementPlatform.DAL.Interfaces;
 
 namespace CateringManagementPlatform.BLL.Services
 {
-    public class BarmanService : IService<BarmanDto>
+    public class BarmanService : IBarmanService
     {
         private readonly IUnitOfWork _repository;
         private readonly IMapper _mapper;
@@ -22,23 +21,19 @@ namespace CateringManagementPlatform.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task CreateAsync(BarmanDto barmanDto)
+        public async Task<int> CreateAsync(BarmanCreateDto barmanCreateDto)
         {
-            if (barmanDto == null)
+            if (barmanCreateDto == null)
             {
                 throw new ValidationException("Введите данные", "");
             }
-            barmanDto.Id = 0;
-
-            var barman = _mapper.Map<Barman>(barmanDto);
+            var barman = _mapper.Map<Barman>(barmanCreateDto);
+            barman.DepartmentId = (int)DepartmentName.Bar;
 
             _repository.Barmen.Create(barman);
             await _repository.SaveAsync();
 
-            barman = await _repository.Barmen.GetByIdAsync(barman.Id);
-
-            barmanDto.Id = barman.Id;
-            barmanDto.NameDepartment = barman.Department?.NameDepartment;
+            return barman.Id;
         }
 
         public async Task DeleteAsync(int id)
@@ -52,30 +47,31 @@ namespace CateringManagementPlatform.BLL.Services
             await _repository.SaveAsync();
         }
 
-        public async Task<IEnumerable<BarmanDto>> GetAllAsync()
+        public async Task<IEnumerable<BarmanReadDto>> GetAllAsync()
         {
             var barman = await _repository.Barmen.GetAllAsync();
-            return _mapper.Map<IEnumerable<BarmanDto>>(barman);
+            return _mapper.Map<IEnumerable<BarmanReadDto>>(barman);
         }
 
-        public async Task<BarmanDto> GetByIdAsync(int id)
+        public async Task<BarmanReadDto> GetByIdAsync(int id)
         {
             var barman = await _repository.Barmen.GetByIdAsync(id);
             if (barman == null)
             {
                 throw new ValidationException("Бармен не найден", "");
             }
-            return _mapper.Map<BarmanDto>(barman);
+            return _mapper.Map<BarmanReadDto>(barman);
         }
 
-        public async Task UpdateAsync(BarmanDto barmanDto)
+        public async Task UpdateAsync(BarmanUpdateDto barmanUpdateDto)
         {
-            var barman = await _repository.Barmen.GetByIdAsync(barmanDto.Id);
+            var barman = await _repository.Barmen.GetByIdAsync(barmanUpdateDto.Id);
             if (barman == null)
             {
                 throw new ValidationException("Бармен не найден", "");
             }
-            barman = _mapper.Map<Barman>(barmanDto);
+            barman = _mapper.Map<Barman>(barmanUpdateDto);
+            barman.DepartmentId = (int)DepartmentName.Bar;
 
             _repository.Barmen.Update(barman);
             await _repository.SaveAsync();

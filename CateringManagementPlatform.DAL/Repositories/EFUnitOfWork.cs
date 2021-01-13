@@ -14,17 +14,18 @@ namespace CateringManagementPlatform.DAL.Repositories
 
         private BarmanRepository _barmenRepository;
         private ChefRepository _chefRepository;
+        private ManagerRepository _managerRepository;
+        private WaiterRepository _waiterRepository;
+        private GuestRepository _guestRepository;
         private DepartmentRepository _departmentRepository;
         private DishRepository _dishRepository;
-        private GuestRepository _guestRepository;
-        private ManagerRepository _managerRepository;
+        private MenuRepository _menuRepository;
         private MenuCategoryRepository _menuCategoryRepository;
-        private OrderLineRepository _orderLineRepository;
         private OrderRepository _orderRepository;
+        private OrderLineRepository _orderLineRepository;
         private PaymentTypeRepository _paymentTypeRepository;
         private StatusRepository _statusRepository;
         private TableRepository _tableRepository;
-        private WaiterRepository _waiterRepository;
 
         public EFUnitOfWork(ApplicationContext context)
         {
@@ -184,6 +185,18 @@ namespace CateringManagementPlatform.DAL.Repositories
                     _waiterRepository = new WaiterRepository(_context);
                 }
                 return _waiterRepository;
+            }
+        }
+
+        public IRepository<Menu> Menu
+        {
+            get
+            {
+                if (_menuRepository == null)
+                {
+                    _menuRepository = new MenuRepository(_context);
+                }
+                return _menuRepository;
             }
         }
 

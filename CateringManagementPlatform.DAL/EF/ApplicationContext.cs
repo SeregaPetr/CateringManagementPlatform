@@ -22,11 +22,25 @@ namespace CateringManagementPlatform.DAL.EF
         public DbSet<Person> People { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Dish> Dishes { get; set; }
+        public DbSet<Menu> Menus { get; set; }
         public DbSet<MenuCategory> MenuCategories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }
         public DbSet<PaymentType> PaymentTypes { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Table> Tables { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Department>().HasData(
+                new Department[]
+                {
+                    new Department{ Id = 1, NameDepartment="Бар"},
+                    new Department{ Id = 2 ,NameDepartment="Кухня"},
+                    new Department{ Id = 3, NameDepartment="Официанты"},
+                    new Department{ Id = 4, NameDepartment="Управляющие"}
+                });
+        }
     }
 }
+

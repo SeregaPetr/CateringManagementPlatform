@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class BarmanRepository : IRepository<Barman>
+    internal class BarmanRepository : IRepository<Barman>
     {
         private readonly ApplicationContext _context;
 
@@ -19,38 +19,30 @@ namespace CateringManagementPlatform.DAL.Repositories
 
         public void Create(Barman barman)
         {
-            if (barman == null)
-            {
-                throw new ArgumentNullException(nameof(barman));
-            }
             _context.Barmen.Add(barman);
         }
 
         public void Delete(Barman barman)
         {
-            if (barman == null)
-            {
-                throw new ArgumentNullException(nameof(barman));
-            }
             _context.Barmen.Remove(barman);
         }
 
         public async Task<Barman> GetByIdAsync(int id)
         {
-            return await _context.Barmen.Include(b => b.Department).AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
+            return await _context.Barmen
+                .Include(b => b.Department)
+                .AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<IEnumerable<Barman>> GetAllAsync()
         {
-            return await _context.Barmen.Include(b => b.Department).AsNoTracking().ToListAsync();
+            return await _context.Barmen
+                .Include(b => b.Department)
+                .AsNoTracking().ToListAsync();
         }
 
         public void Update(Barman barman)
         {
-            if (barman == null)
-            {
-                throw new ArgumentNullException(nameof(barman));
-            }
             _context.Barmen.Update(barman);
         }
     }

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities.People;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class GuestRepository : IRepository<Guest>
+    internal class GuestRepository : IRepository<Guest>
     {
         private readonly ApplicationContext _context;
 
@@ -17,29 +17,33 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(Guest item)
+        public void Create(Guest guest)
         {
-            throw new NotImplementedException();
+            _context.Guests.Add(guest);
         }
 
-        public void Delete(Guest item)
+        public void Delete(Guest guest)
         {
-            throw new NotImplementedException();
+            _context.Guests.Remove(guest);
         }
 
-        public Task<IEnumerable<Guest>> GetAllAsync()
+        public async Task<IEnumerable<Guest>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Guests
+                .Include(g => g.Tables)
+                .AsNoTracking().ToListAsync();
         }
 
-        public Task<Guest> GetByIdAsync(int id)
+        public async Task<Guest> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Guests
+                .Include(g => g.Tables)
+                .AsNoTracking().FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public void Update(Guest item)
+        public void Update(Guest guest)
         {
-            throw new NotImplementedException();
+            _context.Guests.Update(guest);
         }
     }
 }

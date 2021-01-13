@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    public class TableRepository : IRepository<Table>
+    internal class TableRepository : IRepository<Table>
     {
         private readonly ApplicationContext _context;
 
@@ -16,29 +17,35 @@ namespace CateringManagementPlatform.DAL.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Create(Table item)
+        public void Create(Table table)
         {
-            throw new NotImplementedException();
+            _context.Tables.Add(table);
         }
 
-        public void Delete(Table item)
+        public void Delete(Table table)
         {
-            throw new NotImplementedException();
+            _context.Tables.Remove(table);
         }
 
-        public Task<IEnumerable<Table>> GetAllAsync()
+        public async Task<IEnumerable<Table>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Tables
+                .Include(t => t.Waiter)
+                .Include(t => t.Guest)
+                .AsNoTracking().ToListAsync();
         }
 
-        public Task<Table> GetByIdAsync(int id)
+        public async Task<Table> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Tables
+                .Include(t => t.Waiter)
+                .Include(t => t.Guest)
+                .AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public void Update(Table item)
+        public void Update(Table table)
         {
-            throw new NotImplementedException();
+            _context.Tables.Update(table);
         }
     }
 }
