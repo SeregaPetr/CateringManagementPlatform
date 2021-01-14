@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CateringManagementPlatform.BLL.DTO.DishDtos;
+using CateringManagementPlatform.BLL.Infrastructure;
+using CateringManagementPlatform.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -11,36 +14,91 @@ namespace CateringManagementPlatform.API.Controllers
     [ApiController]
     public class DishController : ControllerBase
     {
-        // GET: api/<DishController>
+        private readonly IDishService _dishService;
+
+        public DishController(IDishService dishService)
+        {
+            _dishService = dishService;
+        }
+
+        // GET: api/dish
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<DishReadDto>>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var dishReadDto = await _dishService.GetAllAsync();
+            return Ok(dishReadDto);
         }
 
-        // GET api/<DishController>/5
+        // GET api/dish/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<DishReadDto>> GetById(int id)
         {
-            return "value";
+            try
+            {
+                var dishReadDto = await _dishService.GetByIdAsync(id);
+                if (dishReadDto != null)
+                {
+                    return Ok(dishReadDto);
+                }
+                return NotFound();
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
-        // POST api/<DishController>
+        // POST api/dish
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<DishCreateDto>> Post(DishCreateDto dishCreateDto)
         {
+            if (dishCreateDto == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                int dishCreateId = await _dishService.CreateAsync(dishCreateDto);
+                return CreatedAtAction(nameof(GetById), new { id = dishCreateId }, dishCreateDto);
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
-        // PUT api/<DishController>/5
+        // PUT api/dish/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> Update(int id, DishUpdateDto dishUpdateDto)
         {
+            if (id != dishUpdateDto?.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _dishService.UpdateAsync(dishUpdateDto);
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
-        // DELETE api/<DishController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

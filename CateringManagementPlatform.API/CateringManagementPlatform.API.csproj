@@ -6,9 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CateringManagementPlatform.Auth.API\CateringManagementPlatform.Auth.API.csproj" />
+    <ProjectReference Include="..\CateringManagementPlatform.Auth.Common\CateringManagementPlatform.Auth.Common.csproj" />
     <ProjectReference Include="..\CateringManagementPlatform.BLL\CateringManagementPlatform.BLL.csproj" />
   </ItemGroup>
 

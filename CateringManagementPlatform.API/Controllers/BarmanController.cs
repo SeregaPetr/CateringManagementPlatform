@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.BarmanDtos;
 using CateringManagementPlatform.BLL.Infrastructure;
 using CateringManagementPlatform.BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringManagementPlatform.API.Controllers
 {
+    [Authorize(Roles = "Barman")]
     [Route("api/[controller]")]
     [ApiController]
     public class BarmanController : ControllerBase
@@ -23,8 +25,8 @@ namespace CateringManagementPlatform.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BarmanReadDto>>> Get()
         {
-            var barmanReadDto = await _barmanService.GetAllAsync();
-            return Ok(barmanReadDto);
+            var barmenReadDto = await _barmanService.GetAllAsync();
+            return Ok(barmenReadDto);
         }
 
         // GET api/barman/5

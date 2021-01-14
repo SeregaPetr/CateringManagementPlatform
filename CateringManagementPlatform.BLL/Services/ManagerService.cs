@@ -49,8 +49,8 @@ namespace CateringManagementPlatform.BLL.Services
 
         public async Task<IEnumerable<ManagerReadDto>> GetAllAsync()
         {
-            var manager = await _repository.Managers.GetAllAsync();
-            return _mapper.Map<IEnumerable<ManagerReadDto>>(manager);
+            var managers = await _repository.Managers.GetAllAsync();
+            return _mapper.Map<IEnumerable<ManagerReadDto>>(managers);
         }
 
         public async Task<ManagerReadDto> GetByIdAsync(int id)

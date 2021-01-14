@@ -23,8 +23,8 @@ namespace CateringManagementPlatform.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ChefReadDto>>> Get()
         {
-            var chefReadDto = await _chefService.GetAllAsync();
-            return Ok(chefReadDto);
+            var chefsReadDto = await _chefService.GetAllAsync();
+            return Ok(chefsReadDto);
         }
 
         // GET api/barman/5
