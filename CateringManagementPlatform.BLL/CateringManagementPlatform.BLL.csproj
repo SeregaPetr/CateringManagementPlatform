@@ -6,8 +6,6 @@
 
   <ItemGroup>
     <Folder Include="BusinessModels\" />
-    <Folder Include="DTO\PeopleDto\EmployeesDto\ManagerDtos\" />
-    <Folder Include="DTO\PeopleDto\EmployeesDto\ChefDtos\" />
   </ItemGroup>
 
   <ItemGroup>

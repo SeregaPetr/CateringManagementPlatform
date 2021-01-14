@@ -4,7 +4,6 @@ namespace CateringManagementPlatform.BLL.DTO.PeopleDto
 {
     public class PersonDto
     {
-        //   public int Id { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]

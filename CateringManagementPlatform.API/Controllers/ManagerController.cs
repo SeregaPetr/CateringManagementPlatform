@@ -1,42 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.BarmanDtos;
+using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.ManagerDtos;
 using CateringManagementPlatform.BLL.Infrastructure;
 using CateringManagementPlatform.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CateringManagementPlatform.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BarmanController : ControllerBase
+    public class ManagerController : ControllerBase
     {
-        private readonly IBarmanService _barmanService;
+        private readonly IManagerService _managerService;
 
-        public BarmanController(IBarmanService barmanService)
+        public ManagerController(IManagerService managerService)
         {
-            _barmanService = barmanService;
+            _managerService = managerService;
         }
 
-        // GET: api/barman
+        // GET: api/manager
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BarmanReadDto>>> Get()
+        public async Task<ActionResult<IEnumerable<ManagerReadDto>>> Get()
         {
-            var barmanReadDto = await _barmanService.GetAllAsync();
-            return Ok(barmanReadDto);
+            var managerReadDto = await _managerService.GetAllAsync();
+            return Ok(managerReadDto);
         }
 
-        // GET api/barman/5
+        // GET api/manager/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BarmanReadDto>> GetById(int id)
+        public async Task<ActionResult<ManagerReadDto>> GetById(int id)
         {
             try
             {
-                var barmanReadDto = await _barmanService.GetByIdAsync(id);
-                if (barmanReadDto != null)
+                var managerReadDto = await _managerService.GetByIdAsync(id);
+                if (managerReadDto != null)
                 {
-                    return Ok(barmanReadDto);
+                    return Ok(managerReadDto);
                 }
                 return NotFound();
             }
@@ -50,19 +52,19 @@ namespace CateringManagementPlatform.API.Controllers
             }
         }
 
-        // POST api/barman
+        // POST api/manager
         [HttpPost]
-        public async Task<ActionResult<BarmanCreateDto>> Post(BarmanCreateDto barmanCreateDto)
+        public async Task<ActionResult<ManagerCreateDto>> Post(ManagerCreateDto managerCreateDto)
         {
-            if (barmanCreateDto == null)
+            if (managerCreateDto == null)
             {
                 return BadRequest();
             }
 
             try
             {
-                int barmanCreateId = await _barmanService.CreateAsync(barmanCreateDto);
-                return CreatedAtAction(nameof(GetById), new { id = barmanCreateId }, barmanCreateDto);
+                int managerCreateId = await _managerService.CreateAsync(managerCreateDto);
+                return CreatedAtAction(nameof(GetById), new { id = managerCreateId }, managerCreateDto);
             }
             catch (ValidationException ex)
             {
@@ -74,18 +76,18 @@ namespace CateringManagementPlatform.API.Controllers
             }
         }
 
-        // PUT api/barman/5
+        // PUT api/manager/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, BarmanUpdateDto barmanUpdateDto)
+        public async Task<ActionResult> Update(int id, ManagerUpdateDto managerUpdateDto)
         {
-            if (id != barmanUpdateDto?.Id)
+            if (id != managerUpdateDto?.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _barmanService.UpdateAsync(barmanUpdateDto);
+                await _managerService.UpdateAsync(managerUpdateDto);
                 return NoContent();
             }
             catch (ValidationException ex)
@@ -98,13 +100,13 @@ namespace CateringManagementPlatform.API.Controllers
             }
         }
 
-        // DELETE api/barman/5
+        // DELETE api/manager/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                await _barmanService.DeleteAsync(id);
+                await _managerService.DeleteAsync(id);
                 return NoContent();
             }
             catch (ValidationException ex)

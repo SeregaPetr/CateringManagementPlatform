@@ -9,7 +9,7 @@ namespace CateringManagementPlatform.DAL.Entities
         [Required]
         public string NameDish { get; set; }
         [Required]
-        public  string CompositionDish { get; set; }
+        public string CompositionDish { get; set; }
         [Required]
         public int Weight { get; set; }
         [Required]

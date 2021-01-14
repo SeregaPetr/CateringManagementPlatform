@@ -12,4 +12,9 @@ namespace CateringManagementPlatform.DAL.Entities
         public ICollection<Order> Orders { get; set; }
         public ICollection<OrderLine> OrderLines { get; set; }
     }
+
+    public enum StatusName
+    {
+
+    }
 }

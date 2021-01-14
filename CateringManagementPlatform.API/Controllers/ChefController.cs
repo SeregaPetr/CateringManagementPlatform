@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.BarmanDtos;
+using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.ChefDtos;
 using CateringManagementPlatform.BLL.Infrastructure;
 using CateringManagementPlatform.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -10,33 +10,33 @@ namespace CateringManagementPlatform.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BarmanController : ControllerBase
+    public class ChefController : ControllerBase
     {
-        private readonly IBarmanService _barmanService;
+        private readonly IChefService _chefService;
 
-        public BarmanController(IBarmanService barmanService)
+        public ChefController(IChefService chefService)
         {
-            _barmanService = barmanService;
+            _chefService = chefService;
         }
 
         // GET: api/barman
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BarmanReadDto>>> Get()
+        public async Task<ActionResult<IEnumerable<ChefReadDto>>> Get()
         {
-            var barmanReadDto = await _barmanService.GetAllAsync();
-            return Ok(barmanReadDto);
+            var chefReadDto = await _chefService.GetAllAsync();
+            return Ok(chefReadDto);
         }
 
         // GET api/barman/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BarmanReadDto>> GetById(int id)
+        public async Task<ActionResult<ChefReadDto>> GetById(int id)
         {
             try
             {
-                var barmanReadDto = await _barmanService.GetByIdAsync(id);
-                if (barmanReadDto != null)
+                var chefReadDto = await _chefService.GetByIdAsync(id);
+                if (chefReadDto != null)
                 {
-                    return Ok(barmanReadDto);
+                    return Ok(chefReadDto);
                 }
                 return NotFound();
             }
@@ -52,17 +52,17 @@ namespace CateringManagementPlatform.API.Controllers
 
         // POST api/barman
         [HttpPost]
-        public async Task<ActionResult<BarmanCreateDto>> Post(BarmanCreateDto barmanCreateDto)
+        public async Task<ActionResult<ChefCreateDto>> Post(ChefCreateDto chefCreateDto)
         {
-            if (barmanCreateDto == null)
+            if (chefCreateDto == null)
             {
                 return BadRequest();
             }
 
             try
             {
-                int barmanCreateId = await _barmanService.CreateAsync(barmanCreateDto);
-                return CreatedAtAction(nameof(GetById), new { id = barmanCreateId }, barmanCreateDto);
+                int chefCreateId = await _chefService.CreateAsync(chefCreateDto);
+                return CreatedAtAction(nameof(GetById), new { id = chefCreateId }, chefCreateDto);
             }
             catch (ValidationException ex)
             {
@@ -76,16 +76,16 @@ namespace CateringManagementPlatform.API.Controllers
 
         // PUT api/barman/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, BarmanUpdateDto barmanUpdateDto)
+        public async Task<ActionResult> Update(int id, ChefUpdateDto chefUpdateDto)
         {
-            if (id != barmanUpdateDto?.Id)
+            if (id != chefUpdateDto?.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _barmanService.UpdateAsync(barmanUpdateDto);
+                await _chefService.UpdateAsync(chefUpdateDto);
                 return NoContent();
             }
             catch (ValidationException ex)
@@ -104,7 +104,7 @@ namespace CateringManagementPlatform.API.Controllers
         {
             try
             {
-                await _barmanService.DeleteAsync(id);
+                await _chefService.DeleteAsync(id);
                 return NoContent();
             }
             catch (ValidationException ex)

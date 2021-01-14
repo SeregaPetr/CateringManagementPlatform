@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.BarmanDtos;
+using CateringManagementPlatform.BLL.DTO.PeopleDto.GuestDtos;
 using CateringManagementPlatform.BLL.Infrastructure;
 using CateringManagementPlatform.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -10,33 +10,33 @@ namespace CateringManagementPlatform.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BarmanController : ControllerBase
+    public class GuestController : ControllerBase
     {
-        private readonly IBarmanService _barmanService;
+        private readonly IGuestService _guestService;
 
-        public BarmanController(IBarmanService barmanService)
+        public GuestController(IGuestService guestService)
         {
-            _barmanService = barmanService;
+            _guestService = guestService;
         }
 
-        // GET: api/barman
+        // GET: api/guest
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BarmanReadDto>>> Get()
+        public async Task<ActionResult<IEnumerable<GuestReadDto>>> Get()
         {
-            var barmanReadDto = await _barmanService.GetAllAsync();
-            return Ok(barmanReadDto);
+            var guestReadDto = await _guestService.GetAllAsync();
+            return Ok(guestReadDto);
         }
 
-        // GET api/barman/5
+        // GET api/guest/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BarmanReadDto>> GetById(int id)
+        public async Task<ActionResult<GuestReadDto>> GetById(int id)
         {
             try
             {
-                var barmanReadDto = await _barmanService.GetByIdAsync(id);
-                if (barmanReadDto != null)
+                var guestReadDto = await _guestService.GetByIdAsync(id);
+                if (guestReadDto != null)
                 {
-                    return Ok(barmanReadDto);
+                    return Ok(guestReadDto);
                 }
                 return NotFound();
             }
@@ -50,19 +50,19 @@ namespace CateringManagementPlatform.API.Controllers
             }
         }
 
-        // POST api/barman
+        // POST api/guest
         [HttpPost]
-        public async Task<ActionResult<BarmanCreateDto>> Post(BarmanCreateDto barmanCreateDto)
+        public async Task<ActionResult<GuestCreateDto>> Post(GuestCreateDto guestCreateDto)
         {
-            if (barmanCreateDto == null)
+            if (guestCreateDto == null)
             {
                 return BadRequest();
             }
 
             try
             {
-                int barmanCreateId = await _barmanService.CreateAsync(barmanCreateDto);
-                return CreatedAtAction(nameof(GetById), new { id = barmanCreateId }, barmanCreateDto);
+                int guestCreateId = await _guestService.CreateAsync(guestCreateDto);
+                return CreatedAtAction(nameof(GetById), new { id = guestCreateId }, guestCreateDto);
             }
             catch (ValidationException ex)
             {
@@ -74,18 +74,18 @@ namespace CateringManagementPlatform.API.Controllers
             }
         }
 
-        // PUT api/barman/5
+        // PUT api/guest/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, BarmanUpdateDto barmanUpdateDto)
+        public async Task<ActionResult> Update(int id, GuestUpdateDto guestUpdateDto)
         {
-            if (id != barmanUpdateDto?.Id)
+            if (id != guestUpdateDto?.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _barmanService.UpdateAsync(barmanUpdateDto);
+                await _guestService.UpdateAsync(guestUpdateDto);
                 return NoContent();
             }
             catch (ValidationException ex)
@@ -98,13 +98,13 @@ namespace CateringManagementPlatform.API.Controllers
             }
         }
 
-        // DELETE api/barman/5
+        // DELETE api/guest/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                await _barmanService.DeleteAsync(id);
+                await _guestService.DeleteAsync(id);
                 return NoContent();
             }
             catch (ValidationException ex)

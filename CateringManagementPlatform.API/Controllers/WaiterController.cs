@@ -100,7 +100,7 @@ namespace CateringManagementPlatform.API.Controllers
 
         // DELETE api/waiter/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteCommand(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {

@@ -1,11 +1,11 @@
 using System;
-//using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using CateringManagementPlatform.BLL;
 using CateringManagementPlatform.BLL.Interfaces;
 using CateringManagementPlatform.BLL.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,7 +14,6 @@ namespace CateringManagementPlatform.API
 {
     public class Startup
     {
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,6 +31,10 @@ namespace CateringManagementPlatform.API
             services.AddUnitOfWork();
 
             services.AddScoped<IBarmanService, BarmanService>();
+            services.AddScoped<IChefService, ChefService>();
+            //  services.AddScoped<IDishService, DishService>();
+            services.AddScoped<IGuestService, GuestService>();
+            services.AddScoped<IManagerService, ManagerService>();
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IWaiterService, WaiterService>();
         }

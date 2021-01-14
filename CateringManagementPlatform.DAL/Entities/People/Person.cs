@@ -2,8 +2,8 @@
 
 namespace CateringManagementPlatform.DAL.Entities.People
 {
-    // public abstract class Person
-    public class Person
+     public abstract class Person
+  //  public class Person
     {
         public int Id { get; set; }
         [Required]

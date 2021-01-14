@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using CateringManagementPlatform.DAL.Entities.People.Employees;
 
 namespace CateringManagementPlatform.DAL.Entities
@@ -25,9 +23,5 @@ namespace CateringManagementPlatform.DAL.Entities
         Kitchen,
         Waiters,
         Managers
-        //Бар = 1,
-        //Кухня,
-        //Официанты,
-        //Управляющие
     }
 }

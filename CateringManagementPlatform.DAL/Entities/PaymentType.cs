@@ -11,4 +11,9 @@ namespace CateringManagementPlatform.DAL.Entities
 
         public ICollection<Order> Orders { get; set; }
     }
+
+    public enum PaymentTypeName
+    {
+
+    }
 }
