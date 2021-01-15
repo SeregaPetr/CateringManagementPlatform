@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CateringManagementPlatform.BLL.DTO.PeopleDto.EmployeesDto.BarmanDtos;
-using CateringManagementPlatform.BLL.Infrastructure;
-using CateringManagementPlatform.BLL.Interfaces;
+using CateringManagementPlatform.BLL.AdminPanel.DTO.PeopleDto.EmployeesDto.BarmanDtos;
+using CateringManagementPlatform.BLL.AdminPanel.Infrastructure;
+using CateringManagementPlatform.BLL.AdminPanel.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringManagementPlatform.API.Controllers
 {
-    [Authorize(Roles = "Barman")]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class BarmanController : ControllerBase

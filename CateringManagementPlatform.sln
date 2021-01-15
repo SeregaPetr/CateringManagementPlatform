@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.DAL", "CateringManagementPlatform.DAL\CateringManagementPlatform.DAL.csproj", "{21DF21F5-F317-4FFC-AC35-80E0386B8058}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.BLL", "CateringManagementPlatform.BLL\CateringManagementPlatform.BLL.csproj", "{4E5687BA-F614-4722-8E76-A4DF8E164A6B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.API", "CateringManagementPlatform.API\CateringManagementPlatform.API.csproj", "{E4A814F5-CF4C-4426-A445-704D62F1D151}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringManagementPlatform.Auth.API", "CateringManagementPlatform.Auth.API\CateringManagementPlatform.Auth.API.csproj", "{E2FE4BF1-64D0-4604-A408-6733AE68E960}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.Auth.API", "CateringManagementPlatform.Auth.API\CateringManagementPlatform.Auth.API.csproj", "{E2FE4BF1-64D0-4604-A408-6733AE68E960}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringManagementPlatform.Auth.Common", "CateringManagementPlatform.Auth.Common\CateringManagementPlatform.Auth.Common.csproj", "{560E6FA5-FAA9-4C53-9B41-2B45EB7D335C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.Auth.Common", "CateringManagementPlatform.Auth.Common\CateringManagementPlatform.Auth.Common.csproj", "{560E6FA5-FAA9-4C53-9B41-2B45EB7D335C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringManagementPlatform.BLL.AdminPanel", "CateringManagementPlatform.BLL.AdminPanel\CateringManagementPlatform.BLL.AdminPanel.csproj", "{9DB8C404-3CF5-4942-A6F4-E5929A19F7DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{21DF21F5-F317-4FFC-AC35-80E0386B8058}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21DF21F5-F317-4FFC-AC35-80E0386B8058}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21DF21F5-F317-4FFC-AC35-80E0386B8058}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E5687BA-F614-4722-8E76-A4DF8E164A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E5687BA-F614-4722-8E76-A4DF8E164A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E5687BA-F614-4722-8E76-A4DF8E164A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E5687BA-F614-4722-8E76-A4DF8E164A6B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E4A814F5-CF4C-4426-A445-704D62F1D151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E4A814F5-CF4C-4426-A445-704D62F1D151}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4A814F5-CF4C-4426-A445-704D62F1D151}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{560E6FA5-FAA9-4C53-9B41-2B45EB7D335C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{560E6FA5-FAA9-4C53-9B41-2B45EB7D335C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{560E6FA5-FAA9-4C53-9B41-2B45EB7D335C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DB8C404-3CF5-4942-A6F4-E5929A19F7DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DB8C404-3CF5-4942-A6F4-E5929A19F7DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DB8C404-3CF5-4942-A6F4-E5929A19F7DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DB8C404-3CF5-4942-A6F4-E5929A19F7DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

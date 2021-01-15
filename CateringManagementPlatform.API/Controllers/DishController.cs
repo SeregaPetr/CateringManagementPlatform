@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using CateringManagementPlatform.BLL.DTO.DishDtos;
-using CateringManagementPlatform.BLL.Infrastructure;
-using CateringManagementPlatform.BLL.Interfaces;
+using CateringManagementPlatform.BLL.AdminPanel.DTO.DishDtos;
+using CateringManagementPlatform.BLL.AdminPanel.Infrastructure;
+using CateringManagementPlatform.BLL.AdminPanel.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace CateringManagementPlatform.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class DishController : ControllerBase
@@ -99,6 +99,5 @@ namespace CateringManagementPlatform.API.Controllers
                 return NotFound();
             }
         }
-
     }
 }

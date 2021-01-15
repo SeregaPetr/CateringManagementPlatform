@@ -1,9 +1,8 @@
 using System;
 using AutoMapper;
+using CateringManagementPlatform.API.ServiceExtensions;
 using CateringManagementPlatform.Auth.Common;
-using CateringManagementPlatform.BLL;
-using CateringManagementPlatform.BLL.Interfaces;
-using CateringManagementPlatform.BLL.Services;
+using CateringManagementPlatform.BLL.AdminPanel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,13 +63,7 @@ namespace CateringManagementPlatform.API
 
             services.AddUnitOfWork();
 
-            services.AddScoped<IBarmanService, BarmanService>();
-            services.AddScoped<IChefService, ChefService>();
-            services.AddScoped<IDishService, DishService>();
-            services.AddScoped<IGuestService, GuestService>();
-            services.AddScoped<IManagerService, ManagerService>();
-            services.AddScoped<ITableService, TableService>();
-            services.AddScoped<IWaiterService, WaiterService>();
+            services.AddAdminPanelService();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
