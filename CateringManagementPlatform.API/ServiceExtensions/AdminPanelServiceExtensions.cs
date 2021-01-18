@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CateringManagementPlatform.API.ServiceExtensions
 {
-    public static class ServiceProviderExtensions
+    public static class AdminPanelServiceExtensions
     {
         public static void AddAdminPanelService(this IServiceCollection services)
         {

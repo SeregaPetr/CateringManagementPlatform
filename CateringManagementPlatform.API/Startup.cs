@@ -3,6 +3,9 @@ using AutoMapper;
 using CateringManagementPlatform.API.ServiceExtensions;
 using CateringManagementPlatform.Auth.Common;
 using CateringManagementPlatform.BLL.AdminPanel;
+using CateringManagementPlatform.BLL.Order;
+using CateringManagementPlatform.BLL.Order.Interfaces;
+using CateringManagementPlatform.BLL.Order.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +28,7 @@ namespace CateringManagementPlatform.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCommanderContext(Configuration.GetConnectionString("CateringManagementPlatform"));
+            services.AddCommanderContextOrder(Configuration.GetConnectionString("CateringManagementPlatform"));
 
             services.AddControllers();
 
@@ -62,8 +66,10 @@ namespace CateringManagementPlatform.API
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddUnitOfWork();
+            services.AddUnitOfWorkOrder();
 
             services.AddAdminPanelService();
+            services.AddScoped<IMenuService, MenuService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -15,8 +15,8 @@ namespace CateringManagementPlatform.Auth.API.Models
 
     public enum Role
     {
-        User,
         Admin,
+        User,
         Barman,
         Chef,
         Waiter

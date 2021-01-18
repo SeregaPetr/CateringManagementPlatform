@@ -29,7 +29,7 @@ namespace CateringManagementPlatform.Auth.API.Controllers
                 Id=1,
                 Email="user1@mail.com",
                 Password="user1",
-                Roles=new Role[] { Role.Barman }
+                Roles=new Role[] { Role.Admin }
             },
             new Account()
             {
@@ -43,7 +43,21 @@ namespace CateringManagementPlatform.Auth.API.Controllers
                 Id=3,
                 Email="user3@mail.com",
                 Password="user3",
-                Roles=new Role[] { Role.Admin }
+                Roles=new Role[] { Role.Barman }
+            },
+            new Account()
+            {
+                Id=4,
+                Email="user4@mail.com",
+                Password="user4",
+                Roles=new Role[] { Role.Chef }
+            },
+            new Account()
+            {
+                Id=5,
+                Email="user5@mail.com",
+                Password="user5",
+                Roles=new Role[] { Role.Waiter }
             }
         };
 
