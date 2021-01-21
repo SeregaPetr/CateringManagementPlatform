@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CateringManagementPlatform.BLL.AdminPanel.DTO.DishDtos;
-using CateringManagementPlatform.BLL.AdminPanel.Infrastructure;
 using CateringManagementPlatform.BLL.AdminPanel.Interfaces;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
+using MyValidationException;
 
 namespace CateringManagementPlatform.BLL.AdminPanel.Services
 {

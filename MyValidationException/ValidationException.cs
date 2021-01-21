@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CateringManagementPlatform.BLL.AdminPanel.Infrastructure
+namespace MyValidationException
 {
     public class ValidationException : Exception
     {

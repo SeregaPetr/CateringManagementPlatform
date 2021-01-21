@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.BLL.AdminPanel", "CateringManagementPlatform.BLL.AdminPanel\CateringManagementPlatform.BLL.AdminPanel.csproj", "{9DB8C404-3CF5-4942-A6F4-E5929A19F7DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringManagementPlatform.BLL.Order", "CateringManagementPlatform.BLL.Order\CateringManagementPlatform.BLL.Order.csproj", "{71C64063-4B3D-496F-B549-0D54272E6AA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.BLL.Order", "CateringManagementPlatform.BLL.Order\CateringManagementPlatform.BLL.Order.csproj", "{71C64063-4B3D-496F-B549-0D54272E6AA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyValidationException", "MyValidationException\MyValidationException.csproj", "{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{71C64063-4B3D-496F-B549-0D54272E6AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71C64063-4B3D-496F-B549-0D54272E6AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71C64063-4B3D-496F-B549-0D54272E6AA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

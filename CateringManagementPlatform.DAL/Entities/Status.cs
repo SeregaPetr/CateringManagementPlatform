@@ -15,6 +15,13 @@ namespace CateringManagementPlatform.DAL.Entities
 
     public enum StatusName
     {
-
+        Open = 1,
+        Closed,
+        NewOrder,
+        WorkOrder,
+        OrderIsReady,
+        Ordering,
+        OrderFiled,
+        BillPaid
     }
 }

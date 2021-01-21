@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using CateringManagementPlatform.BLL.AdminPanel.DTO.PaymentTypeDtos;
-using CateringManagementPlatform.BLL.AdminPanel.Infrastructure;
 using CateringManagementPlatform.BLL.AdminPanel.Interfaces;
 using CateringManagementPlatform.DAL.Interfaces;
+using MyValidationException;
 
 namespace CateringManagementPlatform.BLL.AdminPanel.Services
 {

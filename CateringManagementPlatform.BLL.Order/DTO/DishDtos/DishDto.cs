@@ -1,4 +1,4 @@
-﻿namespace CateringManagementPlatform.BLL.Order.DTO
+﻿namespace CateringManagementPlatform.BLL.Order.DTO.DishDtos
 {
     public class DishDto
     {
