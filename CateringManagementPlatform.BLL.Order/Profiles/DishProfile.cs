@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CateringManagementPlatform.BLL.Order.DTO;
+using CateringManagementPlatform.BLL.Order.DTO.DishDtos;
 using CateringManagementPlatform.DAL.Entities;
 
 namespace CateringManagementPlatform.BLL.Order.Profiles

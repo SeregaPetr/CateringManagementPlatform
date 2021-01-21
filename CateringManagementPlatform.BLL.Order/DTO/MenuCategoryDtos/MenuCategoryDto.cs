@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using CateringManagementPlatform.BLL.Order.DTO.DishDtos;
 
-namespace CateringManagementPlatform.BLL.Order.DTO
+namespace CateringManagementPlatform.BLL.Order.DTO.MenuCategoryDtos
 {
     public class MenuCategoryDto
     {

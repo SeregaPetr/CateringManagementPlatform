@@ -70,6 +70,8 @@ namespace CateringManagementPlatform.API
 
             services.AddAdminPanelService();
             services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IOrderService, OrderService>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

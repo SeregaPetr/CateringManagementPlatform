@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
@@ -31,7 +30,12 @@ namespace CateringManagementPlatform.DAL.Repositories
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
             return await _context.Orders
-                .Include(o => o.OrderLines)
+               .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Dish)
+                 .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Status)
+                .Include(o => o.Status)
+                .Include(o => o.Table)
                 .AsNoTracking().ToListAsync();
         }
 
@@ -39,6 +43,11 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             return await _context.Orders
                 .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Dish)
+                 .Include(o => o.OrderLines)
+                    .ThenInclude(ol => ol.Status)
+                .Include(o => o.Status)
+                .Include(o => o.Table)
                 .AsNoTracking().FirstOrDefaultAsync(o => o.Id == id);
         }
 

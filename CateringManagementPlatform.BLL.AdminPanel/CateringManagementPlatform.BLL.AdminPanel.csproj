@@ -10,6 +10,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CateringManagementPlatform.DAL\CateringManagementPlatform.DAL.csproj" />
+    <ProjectReference Include="..\MyValidationException\MyValidationException.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
   </ItemGroup>
 
 </Project>

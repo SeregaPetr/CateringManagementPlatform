@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CateringManagementPlatform.BLL.AdminPanel.DTO.PeopleDto.GuestDtos;
-using CateringManagementPlatform.BLL.AdminPanel.Infrastructure;
 using CateringManagementPlatform.BLL.AdminPanel.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyValidationException;
 
 namespace CateringManagementPlatform.API.Controllers
 {

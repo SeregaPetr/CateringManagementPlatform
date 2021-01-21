@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using CateringManagementPlatform.BLL.AdminPanel.DTO.PeopleDto.GuestDtos;
-using CateringManagementPlatform.BLL.AdminPanel.Infrastructure;
 using CateringManagementPlatform.BLL.AdminPanel.Interfaces;
 using CateringManagementPlatform.DAL.Entities.People;
 using CateringManagementPlatform.DAL.Interfaces;
+using MyValidationException;
 
 namespace CateringManagementPlatform.BLL.AdminPanel.Services
 {

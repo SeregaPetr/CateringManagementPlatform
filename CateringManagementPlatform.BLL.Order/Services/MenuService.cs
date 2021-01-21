@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using CateringManagementPlatform.BLL.Order.DTO;
+using CateringManagementPlatform.BLL.Order.DTO.DishDtos;
+using CateringManagementPlatform.BLL.Order.DTO.MenuCategoryDtos;
+using CateringManagementPlatform.BLL.Order.DTO.MenuDtos;
 using CateringManagementPlatform.BLL.Order.Interfaces;
 using CateringManagementPlatform.DAL.Interfaces;
 
