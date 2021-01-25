@@ -58,6 +58,12 @@ namespace CateringManagementPlatform.BLL.Order.Services
             return order.Id;
         }
 
+        //public async Task<IEnumerable<OrderReadDto>> GetAllAsync()
+        //{
+        //    var order = await _repository.Orders.GetAllAsync();
+        //    return _mapper.Map<IEnumerable<BarmanReadDto>>(barmen);
+        //}
+
         public async Task<OrderReadDto> GetByIdAsync(int id)
         {
             var order = await _repository.Orders.GetByIdAsync(id);
