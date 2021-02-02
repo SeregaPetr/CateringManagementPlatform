@@ -3,14 +3,14 @@ using CateringManagementPlatform.BLL.Order.DTO.DishDtos;
 
 namespace CateringManagementPlatform.BLL.Order.DTO.MenuCategoryDtos
 {
-    public class MenuCategoryDto
+    public class MenuCategoryReadDto
     {
         public string NameCategory { get; set; }
-        public IEnumerable<DishDto> Dishes { get; set; }
+        public IEnumerable<DishReadDto> Dishes { get; set; }
 
-        public MenuCategoryDto()
+        public MenuCategoryReadDto()
         {
-            Dishes = new List<DishDto>();
+            Dishes = new List<DishReadDto>();
         }
     }
 }

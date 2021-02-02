@@ -9,7 +9,7 @@ using MyValidationException;
 
 namespace CateringManagementPlatform.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, User")]
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentTypeController : ControllerBase

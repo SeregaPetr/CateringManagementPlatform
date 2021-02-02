@@ -8,6 +8,6 @@ namespace CateringManagementPlatform.DAL.Entities.People
     {
         public string Phone { get; set; }
 
-        public ICollection<Table> Tables { get; set; }
+        public ICollection<Table> Tables { get; set; } = new List<Table>();
     }
 }

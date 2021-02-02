@@ -9,7 +9,7 @@ namespace CateringManagementPlatform.BLL.Order.DTO.OrderDto
         [Required]
         public int NumberTable { get; set; }
 
-        public string Comment { get; set; }
+       // public string Comment { get; set; }
 
         public ICollection<OrderLineCreateDto> OrderLines { get; set; }
 

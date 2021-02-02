@@ -16,11 +16,6 @@ namespace CateringManagementPlatform.DAL.Entities
         public Table Table { get; set; }
         public int? PaymentTypeId { get; set; }
         public PaymentType PaymentType { get; set; }
-        public ICollection<OrderLine> OrderLines { get; set; }
-
-        public Order()
-        {
-            OrderLines = new List<OrderLine>();
-        }
+        public ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
     }
 }

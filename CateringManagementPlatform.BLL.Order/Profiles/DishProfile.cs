@@ -8,7 +8,7 @@ namespace CateringManagementPlatform.BLL.Order.Profiles
     {
         public DishProfile()
         {
-            CreateMap<Dish, DishDto>();
+            CreateMap<Dish, DishReadDto>();
         }
     }
 }

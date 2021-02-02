@@ -28,6 +28,6 @@ namespace CateringManagementPlatform.DAL.Entities
         public Waiter Waiter { get; set; }
         public int? Guestid { get; set; } //сделать связь многие ко многим
         public Guest Guest { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

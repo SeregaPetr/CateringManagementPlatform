@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,7 +21,7 @@ namespace CateringManagementPlatform.BLL.Order.Services
             _mapper = mapper;
         }
 
-        public async Task<int> CreateAsync(OrderCreateDto orderCreateDto)
+        public async Task<OrderReadDto> CreateAsync(OrderCreateDto orderCreateDto)
         {
             if (orderCreateDto == null)
             {
@@ -32,30 +31,32 @@ namespace CateringManagementPlatform.BLL.Order.Services
             var tables = await _repository.Tables.GetAllAsync();
             int tableId = tables.First(t => t.NumberTable == orderCreateDto.NumberTable).Id;
 
-            var order = new DAL.Entities.Order()
+            var orderTemp = new DAL.Entities.Order()
             {
                 OpeningTimeCheck = DateTime.Now,
-                Comment = orderCreateDto.Comment,
                 StatusId = (int)StatusName.Open,
                 TableId = tableId
             };
-            _repository.Orders.Create(order);
+            _repository.Orders.Create(orderTemp);
             await _repository.SaveAsync();
 
             foreach (var orderLineCreateDto in orderCreateDto.OrderLines)
             {
                 var orderLine = new OrderLine()
                 {
-                    NumberPortions = orderLineCreateDto.NumberPortions,
+                    NumberPortions = orderLineCreateDto.CountPortions,
                     StatusId = (int)StatusName.NewOrder,
                     DishId = orderLineCreateDto.DishId,
-                    OrderId = order.Id,
+                    OrderId = orderTemp.Id,
                 };
                 _repository.OrderLines.Create(orderLine);
             }
             await _repository.SaveAsync();
 
-            return order.Id;
+            var order = await _repository.Orders.GetByIdAsync(orderTemp.Id);
+            var orderReadDto = _mapper.Map<OrderReadDto>(order);
+
+            return orderReadDto;
         }
 
         //public async Task<IEnumerable<OrderReadDto>> GetAllAsync()
@@ -71,7 +72,7 @@ namespace CateringManagementPlatform.BLL.Order.Services
             {
                 throw new ValidationException("Заказ не найден", "");
             }
-            var orderReadDto= _mapper.Map<OrderReadDto>(order); ;
+            var orderReadDto = _mapper.Map<OrderReadDto>(order);
 
             return orderReadDto;
         }
@@ -88,7 +89,7 @@ namespace CateringManagementPlatform.BLL.Order.Services
             {
                 var orderLine = new OrderLine()
                 {
-                    NumberPortions = orderLineCreateDto.NumberPortions,
+                    NumberPortions = orderLineCreateDto.CountPortions,
                     StatusId = (int)StatusName.NewOrder,
                     DishId = orderLineCreateDto.DishId,
                     OrderId = order.Id,

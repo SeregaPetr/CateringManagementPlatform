@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using CateringManagementPlatform.BLL.Order.DTO.DishDtos;
-using CateringManagementPlatform.BLL.Order.DTO.MenuCategoryDtos;
 using CateringManagementPlatform.BLL.Order.DTO.MenuDtos;
 using CateringManagementPlatform.BLL.Order.Interfaces;
 using CateringManagementPlatform.DAL.Interfaces;
@@ -21,33 +18,42 @@ namespace CateringManagementPlatform.BLL.Order.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<MenuDto>> GetAllAsync()
+        public async Task<MenuReadDto> GetAsync()
         {
             var allMenu = await _repository.Menu.GetAllAsync();
-            int idActiveMenu = allMenu.FirstOrDefault(m => m.IsActive == true).Id;
+            var menu = allMenu.FirstOrDefault(m => m.IsActive == true);
 
-            var menuCategories = await _repository.MenuCategories.GetAllAsync();
-            var activeMenuCategories = menuCategories.Where(c => c.MenuId == idActiveMenu);
-
-            var dishes = await _repository.Dishes.GetAllAsync();
-
-            var menuCategoriesDto = new List<MenuCategoryDto>();
-
-            foreach (var activeMenuCategory in activeMenuCategories)
-            {
-                var dishesByMenuCategor = dishes.Where(d => d.MenuCategoryId == activeMenuCategory.Id);
-                var dishDto = _mapper.Map<IEnumerable<DishDto>>(dishesByMenuCategor);
-
-                menuCategoriesDto.Add(
-                    new MenuCategoryDto()
-                    {
-                        NameCategory = activeMenuCategory.NameCategory,
-                        Dishes = dishDto
-                    });
-            }
-
-            return new List<MenuDto> { new MenuDto() { MenuCategories = menuCategoriesDto } };
+            return _mapper.Map<MenuReadDto>(menu);
         }
+
+        //TODO исправить!!! выдавать все меню и перенести в BLL.AdminPanel
+        //public async Task<IEnumerable<MenuReadDto>> GetAllAsync()
+        //{
+        //    var allMenu = await _repository.Menu.GetAllAsync();
+        //    int idActiveMenu = allMenu.FirstOrDefault(m => m.IsActive == true).Id;
+
+        //    var menuCategories = await _repository.MenuCategories.GetAllAsync();
+        //    var activeMenuCategories = menuCategories.Where(c => c.MenuId == idActiveMenu);
+
+        //    var dishes = await _repository.Dishes.GetAllAsync();
+
+        //    var menuCategoriesDto = new List<MenuCategoryReadDto>();
+
+        //    foreach (var activeMenuCategory in activeMenuCategories)
+        //    {
+        //        var dishesByMenuCategor = dishes.Where(d => d.MenuCategoryId == activeMenuCategory.Id);
+        //        var dishDto = _mapper.Map<IEnumerable<DishReadDto>>(dishesByMenuCategor);
+
+        //        menuCategoriesDto.Add(
+        //            new MenuCategoryReadDto()
+        //            {
+        //                NameCategory = activeMenuCategory.NameCategory,
+        //                Dishes = dishDto
+        //            });
+        //    }
+
+        //    return new List<MenuReadDto> { new MenuReadDto() { MenuCategories = menuCategoriesDto } };
+        //}
 
         public void Dispose()
         {

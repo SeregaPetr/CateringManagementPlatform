@@ -1,6 +1,6 @@
 ﻿namespace CateringManagementPlatform.BLL.Order.DTO.DishDtos
 {
-    public class DishDto
+    public class DishReadDto
     {
         public int Id { get; set; }
         public string NameDish { get; set; }

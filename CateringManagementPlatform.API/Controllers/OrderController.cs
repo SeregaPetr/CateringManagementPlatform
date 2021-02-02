@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using CateringManagementPlatform.BLL.Order.DTO.OrderDto;
 using CateringManagementPlatform.BLL.Order.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyValidationException;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CateringManagementPlatform.API.Controllers
 {
@@ -23,15 +20,7 @@ namespace CateringManagementPlatform.API.Controllers
             _orderService = orderService;
         }
 
-        //// GET: api/order
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<OrderReadDto>>> Get()
-        //{
-        //    var ordersReadDto = await _orderService.GetAllAsync();
-        //    return Ok(ordersReadDto);
-        //}
-
-        // GET api/order/5
+        // GET: api/order/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderReadDto>> GetById(int id)
         {
@@ -54,9 +43,9 @@ namespace CateringManagementPlatform.API.Controllers
             }
         }
 
-        // POST api/order
+        // POST: api/order
         [HttpPost]
-        public async Task<ActionResult<OrderCreateDto>> Post(OrderCreateDto orderCreateDto)
+        public async Task<ActionResult<OrderReadDto>> Post(OrderCreateDto orderCreateDto)
         {
             if (orderCreateDto == null)
             {
@@ -65,8 +54,9 @@ namespace CateringManagementPlatform.API.Controllers
 
             try
             {
-                int orderCreateId = await _orderService.CreateAsync(orderCreateDto);
-                return CreatedAtAction(nameof(GetById), new { id = orderCreateId }, orderCreateDto);
+                var orderReadDto = await _orderService.CreateAsync(orderCreateDto);
+
+                return CreatedAtAction(nameof(GetById), new { id = orderReadDto.Id }, orderReadDto);
             }
             catch (ValidationException ex)
             {
@@ -78,7 +68,7 @@ namespace CateringManagementPlatform.API.Controllers
             }
         }
 
-        // PUT api/order/5
+        // PUT: api/order/5
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, OrderUpdateDto orderUpdateDto)
         {
@@ -101,11 +91,6 @@ namespace CateringManagementPlatform.API.Controllers
                 return NotFound();
             }
         }
-
-        //// DELETE api/order/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
     }
 }
 

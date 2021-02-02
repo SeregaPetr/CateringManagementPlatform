@@ -8,6 +8,6 @@ namespace CateringManagementPlatform.DAL.Entities
         public bool IsActive { get; set; }
         public string NameMenu { get; set; }
 
-        public ICollection<MenuCategory> MenuCategories { get; set; }
+        public ICollection<MenuCategory> MenuCategories { get; set; } = new List<MenuCategory>();
     }
 }

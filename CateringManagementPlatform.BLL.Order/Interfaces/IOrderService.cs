@@ -8,7 +8,7 @@ namespace CateringManagementPlatform.BLL.Order.Interfaces
     {
        // Task<IEnumerable<OrderReadDto>> GetAllAsync();
         Task<OrderReadDto> GetByIdAsync(int id);
-        Task<int> CreateAsync(OrderCreateDto orderCreateDto);
+        Task<OrderReadDto> CreateAsync(OrderCreateDto orderCreateDto);
         Task UpdateAsync(OrderUpdateDto orderUpdateDto);
         void Dispose();
     }

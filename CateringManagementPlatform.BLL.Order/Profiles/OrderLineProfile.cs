@@ -11,7 +11,8 @@ namespace CateringManagementPlatform.BLL.Order.Profiles
             CreateMap<OrderLine, OrderLineReadDto>()
                 .ForMember("NameStatus", opt => opt.MapFrom(o => o.Status.NameStatus))
                 .ForMember("NameDish", opt => opt.MapFrom(o => o.Dish.NameDish))
-                .ForMember("PriceDish", opt => opt.MapFrom(o => o.Dish.Price));
+                .ForMember("PriceDish", opt => opt.MapFrom(o => o.Dish.Price))
+                .ForMember("CountPortions", opt => opt.MapFrom(o => o.NumberPortions));
         }
     }
 }

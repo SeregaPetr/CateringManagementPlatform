@@ -6,7 +6,8 @@ namespace CateringManagementPlatform.BLL.Order.Interfaces
 {
     public interface IMenuService
     {
-        Task<IEnumerable<MenuDto>> GetAllAsync();
+        Task<MenuReadDto> GetAsync();
+      //  Task<IEnumerable<MenuReadDto>> GetAllAsync();
         void Dispose();
     }
 }
