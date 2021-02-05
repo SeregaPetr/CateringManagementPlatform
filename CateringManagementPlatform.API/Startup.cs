@@ -19,16 +19,29 @@ namespace CateringManagementPlatform.API
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCommanderContext(Configuration.GetConnectionString("CateringManagementPlatform"));
-            services.AddCommanderContextOrder(Configuration.GetConnectionString("CateringManagementPlatform"));
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder
+                        //.AllowAnyOrigin()
+                        //.AllowAnyMethod()
+                        //.AllowAnyHeader();
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
 
             services.AddControllers();
 
@@ -53,24 +66,14 @@ namespace CateringManagementPlatform.API
                     };
                 });
 
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(builder =>
-                {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
-                });
-            });
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            services.AddUnitOfWork();
-            services.AddUnitOfWorkOrder();
 
             services.AddAdminPanelService();
             services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IOrderService, OrderService>();
+
+            services.AddOrderLibrary(Configuration.GetConnectionString("CateringManagementPlatform"));
+            services.AddAdminPaneLibrary(Configuration.GetConnectionString("CateringManagementPlatform"));
 
         }
 

@@ -8,14 +8,12 @@ namespace CateringManagementPlatform.BLL.Order
 {
     public static class ServiceProviderExtensions
     {
-        public static void AddUnitOfWorkOrder(this IServiceCollection services)
+        public static IServiceCollection AddOrderLibrary(this IServiceCollection services, string connectionString)
         {
             services.AddScoped<IUnitOfWork, EFUnitOfWork>();
-        }
-
-        public static void AddCommanderContextOrder(this IServiceCollection services, string connectionString)
-        {
             services.AddDbContext<ApplicationContext>(opt => opt.UseSqlServer(connectionString));
+
+            return services;
         }
     }
 }

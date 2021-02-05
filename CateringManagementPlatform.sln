@@ -15,7 +15,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.BLL.Order", "CateringManagementPlatform.BLL.Order\CateringManagementPlatform.BLL.Order.csproj", "{71C64063-4B3D-496F-B549-0D54272E6AA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyValidationException", "MyValidationException\MyValidationException.csproj", "{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyValidationException", "MyValidationException\MyValidationException.csproj", "{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringManagementPlatform.Platform", "CateringManagementPlatform.Platform\CateringManagementPlatform.Platform.csproj", "{1E8C90F7-3653-4D60-9CCB-2456FBC554A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringManagementPlatform.BLL.Platform", "CateringManagementPlatform.BLL.Platform\CateringManagementPlatform.BLL.Platform.csproj", "{A582FF1F-1DF5-4078-99F8-BAC0ACAE1EDB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{71C64063-4B3D-496F-B549-0D54272E6AA5} = {71C64063-4B3D-496F-B549-0D54272E6AA5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +58,14 @@ Global
 		{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{588F1DF0-E6AA-4DE7-8CE4-D96461F09500}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E8C90F7-3653-4D60-9CCB-2456FBC554A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E8C90F7-3653-4D60-9CCB-2456FBC554A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E8C90F7-3653-4D60-9CCB-2456FBC554A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E8C90F7-3653-4D60-9CCB-2456FBC554A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A582FF1F-1DF5-4078-99F8-BAC0ACAE1EDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A582FF1F-1DF5-4078-99F8-BAC0ACAE1EDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A582FF1F-1DF5-4078-99F8-BAC0ACAE1EDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A582FF1F-1DF5-4078-99F8-BAC0ACAE1EDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

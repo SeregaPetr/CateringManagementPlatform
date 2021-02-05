@@ -8,14 +8,12 @@ namespace CateringManagementPlatform.BLL.AdminPanel
 {
     public static class ServiceProviderExtensions
     {
-        public static void AddUnitOfWork(this IServiceCollection services)
+        public static IServiceCollection AddAdminPaneLibrary(this IServiceCollection services, string connectionString)
         {
             services.AddScoped<IUnitOfWork, EFUnitOfWork>();
-        }
-
-        public static void AddCommanderContext(this IServiceCollection services, string connectionString)
-        {
             services.AddDbContext<ApplicationContext>(opt => opt.UseSqlServer(connectionString));
+
+            return services;
         }
     }
 }
