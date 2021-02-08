@@ -21,7 +21,7 @@ namespace CateringManagementPlatform.BLL.Order.Services
         public async Task<MenuReadDto> GetAsync()
         {
             var allMenu = await _repository.Menu.GetAllAsync();
-            var menu = allMenu.FirstOrDefault(m => m.IsActive == true);
+            var menu = allMenu.FirstOrDefault(m => m.IsActive == false);
 
             return _mapper.Map<MenuReadDto>(menu);
         }

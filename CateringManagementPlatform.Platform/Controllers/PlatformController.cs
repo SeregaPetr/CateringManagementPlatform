@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CateringManagementPlatform.BLL.Order.DTO.OrderDto;
 using CateringManagementPlatform.BLL.Order.DTO.OrderLineDtos;
-using CateringManagementPlatform.BLL.Order.Interfaces;
-using CateringManagementPlatform.BLL.Platform.HubConfig;
 using CateringManagementPlatform.BLL.Platform.Interfaces;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using MyValidationException;
 
 namespace CateringManagementPlatform.Platform.Controllers
@@ -18,16 +15,24 @@ namespace CateringManagementPlatform.Platform.Controllers
     public class PlatformController : ControllerBase
     {
         private readonly IDataForDepartmentService _dataForDepartmentService;
-        private readonly IHubContext<PlatformHub> _hubContext;
 
-        public PlatformController( IDataForDepartmentService dataForDepartmentService,            IHubContext<PlatformHub> hubContext)
+        public PlatformController(IDataForDepartmentService dataForDepartmentService)
         {
-             _dataForDepartmentService= dataForDepartmentService;
-            _hubContext = hubContext;
+            _dataForDepartmentService = dataForDepartmentService;
+        }
+
+        // GET api/platform/order-lines-for-kitchen
+        [Route("order-lines-for-kitchen")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OrderLineReadDto>>> OrderLinesForKitchen()
+        {
+            var orderLinesForKitchen = await _dataForDepartmentService.GetOrderLinesForKitchen();
+            return Ok(orderLinesForKitchen);
         }
 
         // GET api/platform/create-order
         [Route("order-lines-for-bar")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderLineReadDto>>> OrderLinesForBar()
         {
             var orderLinesForBar = await _dataForDepartmentService.GetOrderLinesForBar();
@@ -36,6 +41,7 @@ namespace CateringManagementPlatform.Platform.Controllers
 
         // POST api/platform/create-order
         [Route("create-order")]
+        [HttpPost]
         public async Task<ActionResult<OrderReadDto>> CreateOrder(OrderCreateDto orderCreateDto)
         {
             if (orderCreateDto == null)
@@ -45,13 +51,8 @@ namespace CateringManagementPlatform.Platform.Controllers
 
             try
             {
-                var orderReadDto =await  _dataForDepartmentService.CreateOrderAsync(orderCreateDto);
+                var orderReadDto = await _dataForDepartmentService.CreateOrderAsync(orderCreateDto);
 
-                var orderLinesForBar = await _dataForDepartmentService.GetOrderLinesForBar();
-
-                await _hubContext.Clients.All.SendAsync("sentFromClienToBar", orderLinesForBar);
-                
-                // GetDisplayUrl
                 string url = Request.GetEncodedUrl();
 
                 //  return CreatedAtAction(nameof(GetById), new { id = orderReadDto.Id }, orderReadDto);
@@ -67,34 +68,33 @@ namespace CateringManagementPlatform.Platform.Controllers
             }
         }
 
-        // POST api/platforma/update-order
-        //[Route("update-order")]
-        //[HttpPost]
-        //public async Task UpdateOrder(OrderUpdateDto orderCreateDto)
-        //{
 
-        //}
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<OrderReadDto>> GetById(int id)
-        //{
-        //    try
-        //    {
-        //        var orderReadDto = await _orderService.GetByIdAsync(id);
-        //        if (orderReadDto != null)
-        //        {
-        //            return Ok(orderReadDto);
-        //        }
-        //        return NotFound();
-        //    }
-        //    catch (ValidationException ex)
-        //    {
-        //        return Content(ex.Message);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return NotFound();
-        //    }
-        //}
+        //PUT api/platforma/update-order/5
+        [Route("update-order/{id}")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateOrder(int id, OrderUpdateDto orderUpdateDto)
+        {
+            if (id != orderUpdateDto?.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _dataForDepartmentService.UpdateOrderAsync(orderUpdateDto);
+
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
     }
 }

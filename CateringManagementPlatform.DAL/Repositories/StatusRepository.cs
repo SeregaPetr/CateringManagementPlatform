@@ -8,44 +8,44 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Repositories
 {
-    internal class StatusRepository : IRepository<Status>
+    internal class StatusRepository //: IRepository<StatusOrder>
     {
-        private readonly ApplicationContext _context;
+        //private readonly ApplicationContext _context;
 
-        public StatusRepository(ApplicationContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+        //public StatusRepository(ApplicationContext context)
+        //{
+        //    _context = context ?? throw new ArgumentNullException(nameof(context));
+        //}
 
-        public void Create(Status status)
-        {
-            _context.Statuses.Add(status);
-        }
+        //public void Create(StatusOrder status)
+        //{
+        //    _context.Statuses.Add(status);
+        //}
 
-        public void Delete(Status status)
-        {
-            _context.Statuses.Remove(status);
-        }
+        //public void Delete(StatusOrder status)
+        //{
+        //    _context.Statuses.Remove(status);
+        //}
 
-        public async Task<IEnumerable<Status>> GetAllAsync()
-        {
-            return await _context.Statuses
-                 .Include(s => s.OrderLines)
-                 .Include(s => s.Orders)
-                 .AsNoTracking().ToListAsync();
-        }
+        //public async Task<IEnumerable<StatusOrder>> GetAllAsync()
+        //{
+        //    return await _context.Statuses
+        //         .Include(s => s.OrderLines)
+        //         .Include(s => s.Orders)
+        //         .AsNoTracking().ToListAsync();
+        //}
 
-        public async Task<Status> GetByIdAsync(int id)
-        {
-            return await _context.Statuses
-                 .Include(s => s.OrderLines)
-                 .Include(s => s.Orders)
-                 .AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
-        }
+        //public async Task<StatusOrder> GetByIdAsync(int id)
+        //{
+        //    return await _context.Statuses
+        //         .Include(s => s.OrderLines)
+        //         .Include(s => s.Orders)
+        //         .AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
+        //}
 
-        public void Update(Status status)
-        {
-            _context.Statuses.Update(status);
-        }
+        //public void Update(StatusOrder status)
+        //{
+        //    _context.Statuses.Update(status);
+        //}
     }
 }

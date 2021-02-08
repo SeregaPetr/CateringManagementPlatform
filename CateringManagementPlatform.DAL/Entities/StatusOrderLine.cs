@@ -3,26 +3,23 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CateringManagementPlatform.DAL.Entities
 {
-    public class Status
+    public class StatusOrderLine
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
         public string NameStatus { get; set; }
 
-        public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
     }
 
-    public enum StatusName
+    public enum StatusNameOrderLine
     {
-        Open = 1,       //счет открыт
-        Closed,         //счет закрыт
-        NewOrder,       //новый заказ
+        NewOrder = 1,       //новый заказ
         WorkOrder,      //заказ в работе
         OrderIsReady,   //заказ готов
         Ordering,       //подача заказа    
         OrderFiled,     //заказ подан
-        BillPaid
     }
 }

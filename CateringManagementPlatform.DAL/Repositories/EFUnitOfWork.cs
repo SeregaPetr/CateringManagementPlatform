@@ -14,9 +14,11 @@ namespace CateringManagementPlatform.DAL.Repositories
 
         private BarmanRepository _barmenRepository;
         private ChefRepository _chefRepository;
-        private ManagerRepository _managerRepository;
+        //  private ManagerRepository _managerRepository;
         private WaiterRepository _waiterRepository;
+        private AccountRepository _accountRepository;
         private GuestRepository _guestRepository;
+        private RoleRepository _userRoleRepository;
         private DepartmentRepository _departmentRepository;
         private DishRepository _dishRepository;
         private MenuRepository _menuRepository;
@@ -24,7 +26,7 @@ namespace CateringManagementPlatform.DAL.Repositories
         private OrderRepository _orderRepository;
         private OrderLineRepository _orderLineRepository;
         private PaymentTypeRepository _paymentTypeRepository;
-        private StatusRepository _statusRepository;
+        //  private StatusRepository _statusRepository;
         private TableRepository _tableRepository;
 
         public EFUnitOfWork(ApplicationContext context)
@@ -56,6 +58,54 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
+        public IRepository<Waiter> Waiters
+        {
+            get
+            {
+                if (_waiterRepository == null)
+                {
+                    _waiterRepository = new WaiterRepository(_context);
+                }
+                return _waiterRepository;
+            }
+        }
+
+        public IRepository<Account> Accounts
+        {
+            get
+            {
+                if (_accountRepository == null)
+                {
+                    _accountRepository = new AccountRepository(_context);
+                }
+                return _accountRepository;
+            }
+        }
+
+        public IRepository<Guest> Guests
+        {
+            get
+            {
+                if (_accountRepository == null)
+                {
+                    _guestRepository = new GuestRepository(_context);
+                }
+                return _guestRepository;
+            }
+        }
+
+        public IRepository<UserRole> UserRoles
+        {
+            get
+            {
+                if (_userRoleRepository == null)
+                {
+                    _userRoleRepository = new RoleRepository(_context);
+                }
+                return _userRoleRepository;
+            }
+        }
+
         public IRepository<Department> Departments
         {
             get
@@ -80,29 +130,29 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
-        public IRepository<Guest> Guests
+        public IRepository<Menu> Menu
         {
             get
             {
-                if (_guestRepository == null)
+                if (_menuRepository == null)
                 {
-                    _guestRepository = new GuestRepository(_context);
+                    _menuRepository = new MenuRepository(_context);
                 }
-                return _guestRepository;
+                return _menuRepository;
             }
         }
 
-        public IRepository<Manager> Managers
-        {
-            get
-            {
-                if (_managerRepository == null)
-                {
-                    _managerRepository = new ManagerRepository(_context);
-                }
-                return _managerRepository;
-            }
-        }
+        //public IRepository<Manager> Managers
+        //{
+        //    get
+        //    {
+        //        if (_managerRepository == null)
+        //        {
+        //            _managerRepository = new ManagerRepository(_context);
+        //        }
+        //        return _managerRepository;
+        //    }
+        //}
 
         public IRepository<MenuCategory> MenuCategories
         {
@@ -113,18 +163,6 @@ namespace CateringManagementPlatform.DAL.Repositories
                     _menuCategoryRepository = new MenuCategoryRepository(_context);
                 }
                 return _menuCategoryRepository;
-            }
-        }
-
-        public IRepository<OrderLine> OrderLines
-        {
-            get
-            {
-                if (_orderLineRepository == null)
-                {
-                    _orderLineRepository = new OrderLineRepository(_context);
-                }
-                return _orderLineRepository;
             }
         }
 
@@ -140,6 +178,19 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
+        public IRepository<OrderLine> OrderLines
+        {
+            get
+            {
+                if (_orderLineRepository == null)
+                {
+                    _orderLineRepository = new OrderLineRepository(_context);
+                }
+                return _orderLineRepository;
+            }
+        }
+
+
         public IRepository<PaymentType> PaymentTypes
         {
             get
@@ -152,17 +203,17 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
-        public IRepository<Status> Statuses
-        {
-            get
-            {
-                if (_statusRepository == null)
-                {
-                    _statusRepository = new StatusRepository(_context);
-                }
-                return _statusRepository;
-            }
-        }
+        //public IRepository<StatusOrder> Statuses
+        //{
+        //    get
+        //    {
+        //        if (_statusRepository == null)
+        //        {
+        //            _statusRepository = new StatusRepository(_context);
+        //        }
+        //        return _statusRepository;
+        //    }
+        //}
 
         public IRepository<Table> Tables
         {
@@ -176,29 +227,6 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
-        public IRepository<Waiter> Waiters
-        {
-            get
-            {
-                if (_waiterRepository == null)
-                {
-                    _waiterRepository = new WaiterRepository(_context);
-                }
-                return _waiterRepository;
-            }
-        }
-
-        public IRepository<Menu> Menu
-        {
-            get
-            {
-                if (_menuRepository == null)
-                {
-                    _menuRepository = new MenuRepository(_context);
-                }
-                return _menuRepository;
-            }
-        }
 
         //public void Commit()
         //{

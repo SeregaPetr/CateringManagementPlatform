@@ -6,6 +6,7 @@ namespace CateringManagementPlatform.DAL.Entities
 {
     public class Department
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]

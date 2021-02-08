@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CateringManagementPlatform.Auth.API\CateringManagementPlatform.Auth.API.csproj" />
-    <ProjectReference Include="..\CateringManagementPlatform.Auth.Common\CateringManagementPlatform.Auth.Common.csproj" />
     <ProjectReference Include="..\CateringManagementPlatform.BLL.AdminPanel\CateringManagementPlatform.BLL.AdminPanel.csproj" />
     <ProjectReference Include="..\CateringManagementPlatform.BLL.Order\CateringManagementPlatform.BLL.Order.csproj" />
   </ItemGroup>

@@ -7,11 +7,12 @@ namespace CateringManagementPlatform.BLL.Platform.Interfaces
 {
     public interface IDataForDepartmentService
     {
-        // Task<OrderReadDto> GetOrder(int id);
         Task<OrderReadDto> CreateOrderAsync(OrderCreateDto orderCreateDto);
-        Task<List<OrderLineReadDto>> GetOrderLinesForBar();
+        Task UpdateOrderAsync(OrderUpdateDto orderUpdateDto);
+        Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForBar();
+        Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForKitchen();
 
-        //   Task<List<OrderLineReadDto>> GetWorkOrderLineForBar();
+
 
 
         //Open = 1,       //счет открыт     ->user

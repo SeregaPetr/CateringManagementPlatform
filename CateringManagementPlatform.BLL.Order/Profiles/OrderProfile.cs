@@ -9,7 +9,7 @@ namespace CateringManagementPlatform.BLL.Order.Profiles
         public OrderProfile()
         {
             CreateMap<DAL.Entities.Order, OrderReadDto>()
-                .ForMember("StatusOrder", opt => opt.MapFrom(o => o.Status.NameStatus))
+                .ForMember("StatusOrder", opt => opt.MapFrom(o => o.StatusOrder.NameStatus))
                 .ForMember("NumberTable", opt => opt.MapFrom(o => o.Table.NumberTable));
         }
     }

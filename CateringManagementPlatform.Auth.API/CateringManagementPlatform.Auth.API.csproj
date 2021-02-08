@@ -5,11 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CateringManagementPlatform.Auth.Common\CateringManagementPlatform.Auth.Common.csproj" />
+    <ProjectReference Include="..\CateringManagementPlatform.BLL.Auth\CateringManagementPlatform.BLL.Auth.csproj" />
   </ItemGroup>
 
 </Project>

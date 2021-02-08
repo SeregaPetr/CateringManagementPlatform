@@ -30,7 +30,7 @@ namespace CateringManagementPlatform.DAL.Repositories
         public async Task<IEnumerable<OrderLine>> GetAllAsync()
         {
             return await _context.OrderLines
-                .Include(o => o.Status)
+                .Include(o => o.StatusOrderLine)
                 .Include(o => o.Dish)
                 .Include(o => o.Order)
                 .AsNoTracking().ToListAsync();
@@ -39,7 +39,7 @@ namespace CateringManagementPlatform.DAL.Repositories
         public async Task<OrderLine> GetByIdAsync(int id)
         {
             return await _context.OrderLines
-                .Include(o => o.Status)
+                .Include(o => o.StatusOrderLine)
                 .Include(o => o.Dish)
                 .Include(o => o.Order)
                 .AsNoTracking().FirstOrDefaultAsync(o => o.Id == id);

@@ -33,8 +33,8 @@ namespace CateringManagementPlatform.DAL.Repositories
                .Include(o => o.OrderLines)
                     .ThenInclude(ol => ol.Dish)
                  .Include(o => o.OrderLines)
-                    .ThenInclude(ol => ol.Status)
-                .Include(o => o.Status)
+                    .ThenInclude(ol => ol.StatusOrderLine)
+                .Include(o => o.StatusOrder)
                 .Include(o => o.Table)
                 .AsNoTracking().ToListAsync();
         }
@@ -45,8 +45,8 @@ namespace CateringManagementPlatform.DAL.Repositories
                 .Include(o => o.OrderLines)
                     .ThenInclude(ol => ol.Dish)
                  .Include(o => o.OrderLines)
-                    .ThenInclude(ol => ol.Status)
-                .Include(o => o.Status)
+                    .ThenInclude(ol => ol.StatusOrderLine)
+                .Include(o => o.StatusOrder)
                 .Include(o => o.Table)
                 .AsNoTracking().FirstOrDefaultAsync(o => o.Id == id);
         }

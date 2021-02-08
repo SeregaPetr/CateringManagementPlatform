@@ -6,6 +6,6 @@ namespace CateringManagementPlatform.DAL.Entities.People.Employees
     [Table("Waiters")]
     public class Waiter : Employee
     {
-        public ICollection<Table> Tables { get; set; } = new List<Table>();
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

@@ -5,6 +5,7 @@ namespace CateringManagementPlatform.DAL.Entities
 {
     public class Dish
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -19,11 +20,12 @@ namespace CateringManagementPlatform.DAL.Entities
         [Required]
         public decimal Price { get; set; }
 
+        [Required]
         public bool IsArchive { get; set; }
 
-        public int? MenuCategoryId { get; set; }
+        public int MenuCategoryId { get; set; }
         public MenuCategory MenuCategory { get; set; }
-        public int? DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
         public Department Department { get; set; }
         public ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
     }

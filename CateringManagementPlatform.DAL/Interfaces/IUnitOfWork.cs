@@ -10,9 +10,11 @@ namespace CateringManagementPlatform.DAL.Interfaces
     {
         public IRepository<Barman> Barmen { get; }
         public IRepository<Chef> Chefs { get; }
-        public IRepository<Manager> Managers { get; }
+        //    public IRepository<Manager> Managers { get; }
         public IRepository<Waiter> Waiters { get; }
+        public IRepository<Account> Accounts { get; }
         public IRepository<Guest> Guests { get; }
+        public IRepository<UserRole> UserRoles { get; }
         public IRepository<Department> Departments { get; }
         public IRepository<Dish> Dishes { get; }
         public IRepository<Menu> Menu { get; }
@@ -20,7 +22,7 @@ namespace CateringManagementPlatform.DAL.Interfaces
         public IRepository<Order> Orders { get; }
         public IRepository<OrderLine> OrderLines { get; }
         public IRepository<PaymentType> PaymentTypes { get; }
-        public IRepository<Status> Statuses { get; }
+        //  public IRepository<StatusOrder> Statuses { get; }
         public IRepository<Table> Tables { get; }
 
         Task SaveAsync();

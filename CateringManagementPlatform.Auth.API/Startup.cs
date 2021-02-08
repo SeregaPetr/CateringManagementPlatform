@@ -1,4 +1,8 @@
-using CateringManagementPlatform.Auth.Common;
+using System;
+using AutoMapper;
+using CateringManagementPlatform.BLL.Auth;
+using CateringManagementPlatform.BLL.Auth.Interfaces;
+using CateringManagementPlatform.BLL.Auth.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +37,11 @@ namespace CateringManagementPlatform.Auth.API
                         .AllowAnyHeader();
                 });
             });
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddAuthLibrary(Configuration.GetConnectionString("CateringManagementPlatform"));
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

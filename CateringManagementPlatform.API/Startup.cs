@@ -1,8 +1,8 @@
 using System;
 using AutoMapper;
 using CateringManagementPlatform.API.ServiceExtensions;
-using CateringManagementPlatform.Auth.Common;
 using CateringManagementPlatform.BLL.AdminPanel;
+using CateringManagementPlatform.BLL.Auth;
 using CateringManagementPlatform.BLL.Order;
 using CateringManagementPlatform.BLL.Order.Interfaces;
 using CateringManagementPlatform.BLL.Order.Services;

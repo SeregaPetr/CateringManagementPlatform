@@ -10,11 +10,11 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Profiles
         {
             CreateMap<TableCreateDto, Table>();
             CreateMap<TableUpdateDto, Table>();
-            CreateMap<Table, TableReadDto>()
-                .ForMember("FullNameWaiter", opt => opt.MapFrom
-                (t => t.Waiter.LastName + " " + t.Waiter.FirstName + " " + t.Waiter.Patronymic))
-                .ForMember("FullNameGuest", opt => opt.MapFrom
-                (t => t.Guest.LastName + " " + t.Guest.FirstName + " " + t.Guest.Patronymic));
+            //CreateMap<Table, TableReadDto>()
+            //    .ForMember("FullNameWaiter", opt => opt.MapFrom
+            //    (t => t.Waiter.LastName + " " + t.Waiter.FirstName + " " + t.Waiter.Patronymic))
+            //    .ForMember("FullNameGuest", opt => opt.MapFrom
+            //    (t => t.Guest.LastName + " " + t.Guest.FirstName + " " + t.Guest.Patronymic));
         }
     }
 }

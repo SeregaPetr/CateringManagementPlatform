@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CateringManagementPlatform.Auth.Common
+namespace CateringManagementPlatform.BLL.Auth
 {
     public class AuthOptions
     {

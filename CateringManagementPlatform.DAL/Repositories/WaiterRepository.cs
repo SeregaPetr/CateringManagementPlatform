@@ -31,7 +31,6 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             return await _context.Waiters
                 .Include(w => w.Department)
-                .Include(w => w.Tables)
                 .AsNoTracking().ToListAsync();
         }
 
@@ -39,7 +38,6 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             return await _context.Waiters
                 .Include(w => w.Department)
-                .Include(w => w.Tables)
                 .AsNoTracking().FirstOrDefaultAsync(w => w.Id == id);
         }
 

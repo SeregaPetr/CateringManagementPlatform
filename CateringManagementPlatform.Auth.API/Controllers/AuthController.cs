@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using CateringManagementPlatform.Auth.API.Models;
-using CateringManagementPlatform.Auth.Common;
+using CateringManagementPlatform.BLL.Auth;
+using CateringManagementPlatform.BLL.Auth.DTO;
+using CateringManagementPlatform.BLL.Auth.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -15,77 +18,39 @@ namespace CateringManagementPlatform.Auth.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IOptions<AuthOptions> authOptions;
+        private readonly IOptions<AuthOptions> _authOptions;
+        private readonly IAuthService _authService;
 
-        public AuthController(IOptions<AuthOptions> authOptions)
+        public AuthController(IOptions<AuthOptions> authOptions, IAuthService authService)
         {
-            this.authOptions = authOptions;
+            _authOptions = authOptions;
+            _authService = authService;
         }
-
-        private List<Account> Accounts => new List<Account>
-        {
-            new Account()
-            {
-                Id=1,
-                Email="user1@mail.com",
-                Password="user1",
-                Roles=new Role[] { Role.Admin }
-            },
-            new Account()
-            {
-                Id=2,
-                Email="user2@mail.com",
-                Password="user2",
-                Roles=new Role[] { Role.User }
-            },
-            new Account()
-            {
-                Id=3,
-                Email="user3@mail.com",
-                Password="user3",
-                Roles=new Role[] { Role.Barman }
-            },
-            new Account()
-            {
-                Id=4,
-                Email="user4@mail.com",
-                Password="user4",
-                Roles=new Role[] { Role.Chef }
-            },
-            new Account()
-            {
-                Id=5,
-                Email="user5@mail.com",
-                Password="user5",
-                Roles=new Role[] { Role.Waiter }
-            }
-        };
 
         [Route("login")]
         [HttpPost]
-        public IActionResult Login([FromBody] Login request)
+        public async Task<IActionResult> Login([FromBody] Login request)
         {
-            var user = AuthenticateUser(request.Email, request.Password);
+            var user = await AuthenticateUser(request.Email, request.Password);
 
             if (user != null)
             {
                 var token = GenerateJWT(user);
-                return Ok(new
-                {
-                    access_token = token
-                });
+                return Ok(new { access_token = token });
             }
             return Unauthorized();
         }
 
-        private Account AuthenticateUser(string email, string password)
+        private async Task<AccountReadDto> AuthenticateUser(string email, string password)
         {
-            return Accounts.SingleOrDefault(u => u.Email == email && u.Password == password);
+            var accounts = await _authService.GetAllAsync();
+
+            return accounts.FirstOrDefault(a => a.Email == email && a.Password == password);
         }
 
-        private string GenerateJWT(Account user)
+        private string GenerateJWT(AccountReadDto user)
         {
-            var authParams = authOptions.Value;
+            var authParams = _authOptions.Value;
 
             var securityKey = authParams.GetSymmetricSecurityKey();
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -98,7 +63,7 @@ namespace CateringManagementPlatform.Auth.API.Controllers
 
             foreach (var role in user.Roles)
             {
-                claims.Add(new Claim("role", role.ToString()));
+                claims.Add(new Claim("role", role.RoleName.ToString()));
             }
 
             var token = new JwtSecurityToken(

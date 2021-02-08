@@ -34,7 +34,7 @@ namespace CateringManagementPlatform.BLL.Order.Services
             var orderTemp = new DAL.Entities.Order()
             {
                 OpeningTimeCheck = DateTime.Now,
-                StatusId = (int)StatusName.Open,
+                StatusOrderId = (int)StatusNameOrder.Open,
                 TableId = tableId
             };
             _repository.Orders.Create(orderTemp);
@@ -45,7 +45,7 @@ namespace CateringManagementPlatform.BLL.Order.Services
                 var orderLine = new OrderLine()
                 {
                     NumberPortions = orderLineCreateDto.CountPortions,
-                    StatusId = (int)StatusName.NewOrder,
+                    StatusOrderLineId = (int)StatusNameOrderLine.NewOrder,
                     DishId = orderLineCreateDto.DishId,
                     OrderId = orderTemp.Id,
                 };
@@ -90,7 +90,7 @@ namespace CateringManagementPlatform.BLL.Order.Services
                 var orderLine = new OrderLine()
                 {
                     NumberPortions = orderLineCreateDto.CountPortions,
-                    StatusId = (int)StatusName.NewOrder,
+                    StatusOrderLineId = (int)StatusNameOrderLine.NewOrder,
                     DishId = orderLineCreateDto.DishId,
                     OrderId = order.Id,
                 };
