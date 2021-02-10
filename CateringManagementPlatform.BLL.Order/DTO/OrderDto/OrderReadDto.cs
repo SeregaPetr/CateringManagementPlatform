@@ -10,6 +10,7 @@ namespace CateringManagementPlatform.BLL.Order.DTO.OrderDto
         public DateTime OpeningTimeCheck { get; set; }
         public string StatusOrder { get; set; }
         public int NumberTable { get; set; }
+        public string AccountId { get; set; }
         public ICollection<OrderLineReadDto> OrderLines { get; set; }
 
         public OrderReadDto()

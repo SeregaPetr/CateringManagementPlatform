@@ -16,7 +16,8 @@ namespace CateringManagementPlatform.DAL.Entities
 
     public enum StatusNameOrder
     {
-        Open = 1,      //счет открыт
-        Closed,    //счет закрыт
+        Open = 1,       //счет открыт     ->user
+        Payment,        //оплата          ->user
+        Closed,         //счет закрыт     ->
     }
 }

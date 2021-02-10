@@ -16,10 +16,10 @@ namespace CateringManagementPlatform.DAL.Entities
 
     public enum StatusNameOrderLine
     {
-        NewOrder = 1,       //новый заказ
-        WorkOrder,      //заказ в работе
-        OrderIsReady,   //заказ готов
-        Ordering,       //подача заказа    
-        OrderFiled,     //заказ подан
+        NewOrder = 1,   //новый заказ     ->bar, Kitchen, user
+        WorkOrder,      //заказ в работе  ->bar, Kitchen, user
+        OrderIsReady,   //заказ готов     ->waiters, user
+        Ordering,       //подача заказа   ->waiters, user
+        OrderFiled,     //заказ подан     ->user
     }
 }

@@ -1,14 +1,17 @@
 using System;
 using AutoMapper;
+using CateringManagementPlatform.BLL.Auth;
 using CateringManagementPlatform.BLL.Platform;
 using CateringManagementPlatform.BLL.Platform.HubConfig;
 using CateringManagementPlatform.BLL.Platform.Interfaces;
 using CateringManagementPlatform.BLL.Platform.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CateringManagementPlatform.Platform
 {
@@ -41,6 +44,27 @@ namespace CateringManagementPlatform.Platform
             services.AddSignalR(); //hub
             services.AddControllers();
 
+            var authOptions = Configuration.GetSection("Auth").Get<AuthOptions>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = authOptions.Issuer,
+
+                        ValidateAudience = true,
+                        ValidAudience = authOptions.Audience,
+
+                        ValidateLifetime = true,
+
+                        IssuerSigningKey = authOptions.GetSymmetricSecurityKey(),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddPlatformLibrary(Configuration.GetConnectionString("CateringManagementPlatform"));
@@ -60,6 +84,7 @@ namespace CateringManagementPlatform.Platform
 
             app.UseCors();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

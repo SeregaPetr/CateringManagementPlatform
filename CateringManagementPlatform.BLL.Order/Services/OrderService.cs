@@ -35,7 +35,9 @@ namespace CateringManagementPlatform.BLL.Order.Services
             {
                 OpeningTimeCheck = DateTime.Now,
                 StatusOrderId = (int)StatusNameOrder.Open,
-                TableId = tableId
+                TableId = tableId,
+                GuestId = orderCreateDto.GuestId,
+                WaiterId = orderCreateDto.WaiterId
             };
             _repository.Orders.Create(orderTemp);
             await _repository.SaveAsync();
@@ -58,12 +60,6 @@ namespace CateringManagementPlatform.BLL.Order.Services
 
             return orderReadDto;
         }
-
-        //public async Task<IEnumerable<OrderReadDto>> GetAllAsync()
-        //{
-        //    var order = await _repository.Orders.GetAllAsync();
-        //    return _mapper.Map<IEnumerable<BarmanReadDto>>(barmen);
-        //}
 
         public async Task<OrderReadDto> GetByIdAsync(int id)
         {

@@ -7,5 +7,6 @@
         public string NameStatus { get; set; }
         public string NameDish { get; set; }
         public decimal PriceDish { get; set; }
+        public int NumberTable { get; set; }
     }
 }

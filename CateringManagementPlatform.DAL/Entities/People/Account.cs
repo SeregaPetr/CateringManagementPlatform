@@ -11,5 +11,4 @@ namespace CateringManagementPlatform.DAL.Entities.People
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
         public Person Person { get; set; }
     }
-
 }
