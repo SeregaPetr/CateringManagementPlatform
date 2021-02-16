@@ -14,12 +14,12 @@ namespace CateringManagementPlatform.DAL.Entities
         public ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
     }
 
-    public enum StatusNameOrderLine
+    public enum NameStatusOrderLine
     {
         NewOrder = 1,   //новый заказ     ->bar, Kitchen, user
-        WorkOrder,      //заказ в работе  ->bar, Kitchen, user
-        OrderIsReady,   //заказ готов     ->waiters, user
+        WorkOrder,      //заказ в работе  ->bar ||(&&) Kitchen, user
+        OrderIsReady,   //заказ готов     ->waiters, bar || Kitchen user
         Ordering,       //подача заказа   ->waiters, user
-        OrderFiled,     //заказ подан     ->user
+        OrderFiled,     //заказ подан     ->waiters, user
     }
 }

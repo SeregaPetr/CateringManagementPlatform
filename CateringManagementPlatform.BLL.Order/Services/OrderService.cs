@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CateringManagementPlatform.BLL.Order.DTO.OrderDto;
+using CateringManagementPlatform.BLL.Order.DTO.OrderLineDtos;
 using CateringManagementPlatform.BLL.Order.Interfaces;
 using CateringManagementPlatform.DAL.Entities;
 using CateringManagementPlatform.DAL.Interfaces;
@@ -21,46 +23,6 @@ namespace CateringManagementPlatform.BLL.Order.Services
             _mapper = mapper;
         }
 
-        public async Task<OrderReadDto> CreateAsync(OrderCreateDto orderCreateDto)
-        {
-            if (orderCreateDto == null)
-            {
-                throw new ValidationException("Введите данные", "");
-            }
-
-            var tables = await _repository.Tables.GetAllAsync();
-            int tableId = tables.First(t => t.NumberTable == orderCreateDto.NumberTable).Id;
-
-            var orderTemp = new DAL.Entities.Order()
-            {
-                OpeningTimeCheck = DateTime.Now,
-                StatusOrderId = (int)StatusNameOrder.Open,
-                TableId = tableId,
-                GuestId = orderCreateDto.GuestId,
-                WaiterId = orderCreateDto.WaiterId
-            };
-            _repository.Orders.Create(orderTemp);
-            await _repository.SaveAsync();
-
-            foreach (var orderLineCreateDto in orderCreateDto.OrderLines)
-            {
-                var orderLine = new OrderLine()
-                {
-                    NumberPortions = orderLineCreateDto.CountPortions,
-                    StatusOrderLineId = (int)StatusNameOrderLine.NewOrder,
-                    DishId = orderLineCreateDto.DishId,
-                    OrderId = orderTemp.Id,
-                };
-                _repository.OrderLines.Create(orderLine);
-            }
-            await _repository.SaveAsync();
-
-            var order = await _repository.Orders.GetByIdAsync(orderTemp.Id);
-            var orderReadDto = _mapper.Map<OrderReadDto>(order);
-
-            return orderReadDto;
-        }
-
         public async Task<OrderReadDto> GetByIdAsync(int id)
         {
             var order = await _repository.Orders.GetByIdAsync(id);
@@ -73,22 +35,75 @@ namespace CateringManagementPlatform.BLL.Order.Services
             return orderReadDto;
         }
 
+        public async Task<OrderReadDto> CreateAsync(OrderCreateDto orderCreateDto)
+        {
+            if (orderCreateDto == null)
+            {
+                throw new ValidationException("Введите данные", "");
+            }
+
+            var orderTemp = await CreateOrderAsync(orderCreateDto);
+
+            await CreateOrderLinesAsync(orderCreateDto.OrderLines, orderTemp.Id);
+
+            var order = await _repository.Orders.GetByIdAsync(orderTemp.Id);
+
+            return _mapper.Map<OrderReadDto>(order);
+        }
+
         public async Task UpdateAsync(OrderUpdateDto orderUpdateDto)
         {
+            await UpdateOrderAsync(orderUpdateDto);
+
+            await CreateOrderLinesAsync(orderUpdateDto.OrderLines, orderUpdateDto.Id);
+        }
+
+        private async Task<DAL.Entities.Order> CreateOrderAsync(OrderCreateDto orderCreateDto)
+        {
+            var tables = await _repository.Tables.GetAllAsync();
+            int tableId = tables.First(t => t.NumberTable == orderCreateDto.NumberTable).Id;
+
+            var orderTemp = new DAL.Entities.Order()
+            {
+                CheckOpeningTime = DateTime.Now,
+                StatusOrderId = (int)NameStatusOrder.Open,
+                TableId = tableId,
+                GuestId = orderCreateDto.GuestId.Value,
+                WaiterId = orderCreateDto.WaiterId.Value
+            };
+            _repository.Orders.Create(orderTemp);
+            await _repository.SaveAsync();
+            return orderTemp;
+        }
+
+        private async Task<DAL.Entities.Order> UpdateOrderAsync(OrderUpdateDto orderUpdateDto)
+        {
             var order = await _repository.Orders.GetByIdAsync(orderUpdateDto.Id);
+
             if (order == null)
             {
                 throw new ValidationException("Заказ не найден", "");
             }
 
-            foreach (var orderLineCreateDto in orderUpdateDto.OrderLines)
+            order.CheckClosingTime = orderUpdateDto.CheckClosingTime;
+            order.StatusOrderId = orderUpdateDto.StatusOrderId;
+            order.PaymentTypeId = orderUpdateDto.PaymentTypeId;
+
+            _repository.Orders.Update(order);
+            await _repository.SaveAsync();
+            return order;
+        }
+
+        private async Task CreateOrderLinesAsync(ICollection<OrderLineCreateDto> orderLines, int orderId)
+        {
+            foreach (var orderLineCreateDto in orderLines)
             {
                 var orderLine = new OrderLine()
                 {
-                    NumberPortions = orderLineCreateDto.CountPortions,
-                    StatusOrderLineId = (int)StatusNameOrderLine.NewOrder,
+                    CountPortions = orderLineCreateDto.CountPortions,
+                    StatusOrderLineId = (int)NameStatusOrderLine.NewOrder,
                     DishId = orderLineCreateDto.DishId,
-                    OrderId = order.Id,
+                    OrderId = orderId
                 };
                 _repository.OrderLines.Create(orderLine);
             }

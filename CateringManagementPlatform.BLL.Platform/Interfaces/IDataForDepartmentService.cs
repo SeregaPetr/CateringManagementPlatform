@@ -7,12 +7,15 @@ namespace CateringManagementPlatform.BLL.Platform.Interfaces
 {
     public interface IDataForDepartmentService
     {
-        Task<OrderLineReadDto> UpdateOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto);
-        Task<OrderReadDto> CreateOrderAsync(OrderCreateDto orderCreateDto, int accountId);
-        Task UpdateOrderAsync(OrderUpdateDto orderUpdateDto);
-        Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForWaiter();
-        Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForBar();
-        Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForKitchen();
-        Task<OrderReadDto> GetOrderForGuest(int accountId);
+        Task UpdateOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto);
+        Task ConfirOrderAsync(OrderCreateDto orderCreateDto, int accountId);
+        Task ConfirmPaymentAsync(int orderId);
+        Task PaymentAsync(OrderUpdateDto orderUpdateDto, int accountId);
+        Task<IEnumerable<OrderReadDto>> GetUnpaidOrdersAsync();
+        Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForWaiterAsync();
+        Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForBarAsync();
+        Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForKitchenAsync();
+        Task<OrderReadDto> GetOrderForGuestAsync(int accountId);
+        void Dispose();
     }
 }

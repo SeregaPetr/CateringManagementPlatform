@@ -21,9 +21,9 @@ namespace CateringManagementPlatform.DAL.Entities
 
     public enum DepartmentName
     {
-        Bar = 1,
+        Managers = 1,
+        Bar,
         Kitchen,
-        Waiters,
-        Managers
+        Waiters
     }
 }

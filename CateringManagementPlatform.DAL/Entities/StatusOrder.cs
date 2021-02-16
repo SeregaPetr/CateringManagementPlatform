@@ -14,7 +14,7 @@ namespace CateringManagementPlatform.DAL.Entities
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 
-    public enum StatusNameOrder
+    public enum NameStatusOrder
     {
         Open = 1,       //счет открыт     ->user
         Payment,        //оплата          ->user

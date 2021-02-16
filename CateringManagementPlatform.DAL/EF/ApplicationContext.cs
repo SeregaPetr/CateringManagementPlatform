@@ -9,7 +9,7 @@ namespace CateringManagementPlatform.DAL.EF
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> opt) : base(opt)
         {
-           // Database.EnsureDeleted();
+          //  Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -35,56 +35,79 @@ namespace CateringManagementPlatform.DAL.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            UserRole adminRole = new UserRole { Id = 1, RoleName = "Admin" };
-            UserRole userRole = new UserRole { Id = 2, RoleName = "User" };
-            UserRole barmanRole = new UserRole { Id = 3, RoleName = "Barman" };
-            UserRole chefRole = new UserRole { Id = 4, RoleName = "Chef" };
-            UserRole waiterRole = new UserRole { Id = 5, RoleName = "Waiter" };
+            modelBuilder
+             .Entity<Account>()
+             .HasMany(p => p.UserRoles)
+             .WithMany(p => p.Accounts)
+             .UsingEntity(j => j.ToTable("AccountUserRole"));
 
-            Account adminAccount = new Account
-            {
-                Id = 1,
-                Email = "admin@mail.com",
-                Password = "admin",
-            };
-            Account userAccount = new Account
-            {
-                Id = 2,
-                Email = "user@mail.com",
-                Password = "user",
-            };
-            Account barmanAccount = new Account
-            {
-                Id = 3,
-                Email = "barman@mail.com",
-                Password = "barman",
-            };
-            Account chefAccount = new Account
-            {
-                Id = 4,
-                Email = "chef@mail.com",
-                Password = "chef",
-            };
-            Account waiterAccount = new Account
-            {
-                Id = 5,
-                Email = "waiter@mail.com",
-                Password = "waiter",
-            };
+            modelBuilder.Entity<UserRole>().HasData(
+                    new UserRole { Id = 1, RoleName = "Admin" },
+                    new UserRole { Id = 2, RoleName = "Barman" },
+                    new UserRole { Id = 3, RoleName = "Chef" },
+                    new UserRole { Id = 4, RoleName = "Waiter" },
+                    new UserRole { Id = 5, RoleName = "User" }
+                );
 
-            modelBuilder.Entity<Account>().HasData(adminAccount, userAccount, barmanAccount, chefAccount, waiterAccount);
-            modelBuilder.Entity<UserRole>().HasData(adminRole, userRole, barmanRole, chefRole, waiterRole);
+            modelBuilder.Entity<Account>().HasData(
+                    new Account { Id = 1, Email = "admin@mail.com", Password = "admin" },
+                    new Account { Id = 2, Email = "barman@mail.com", Password = "barman" },
+                    new Account { Id = 3, Email = "chef@mail.com", Password = "chef" },
+                    new Account { Id = 4, Email = "waiter@mail.com", Password = "waiter" },
+                    new Account { Id = 5, Email = "user1@mail.com", Password = "user1" },
+                    new Account { Id = 6, Email = "user2@mail.com", Password = "user2" }
+                );
+
+            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
+               .UsingEntity(j => j.HasData(new { AccountsId = 1, UserRolesId = 1 }));
+
+            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
+                .UsingEntity(j => j.HasData(new { AccountsId = 2, UserRolesId = 2 }));
+
+            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
+                .UsingEntity(j => j.HasData(new { AccountsId = 3, UserRolesId = 3 }));
+
+            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
+                .UsingEntity(j => j.HasData(new { AccountsId = 4, UserRolesId = 4 }));
+
+            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
+                .UsingEntity(j => j.HasData(new { AccountsId = 5, UserRolesId = 5 }));
+
+            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
+                .UsingEntity(j => j.HasData(new { AccountsId = 6, UserRolesId = 5 }));
+
+            modelBuilder.Entity<Manager>().HasData(
+                    new Manager { Id = 1, FirstName = "Вася", LastName = "Пупкин", DepartmentId = (int)DepartmentName.Managers, AccountId = 1 }
+                );
+
+            modelBuilder.Entity<Barman>().HasData(
+                    new Barman { Id = 2, FirstName = "Петя", LastName = "Шустрый", DepartmentId = (int)DepartmentName.Bar, AccountId = 2 }
+                );
+
+            modelBuilder.Entity<Chef>().HasData(
+                   new Chef { Id = 3, FirstName = "Катя", LastName = "Воробей", DepartmentId = (int)DepartmentName.Kitchen, AccountId = 3 }
+                );
+
+            modelBuilder.Entity<Waiter>().HasData(
+                    new Waiter { Id = 4, FirstName = "Настя", LastName = "Дудка", DepartmentId = (int)DepartmentName.Waiters, AccountId = 4 }
+                );
+
+            modelBuilder.Entity<Guest>().HasData(
+                    new Guest { Id = 5, FirstName = "Стас", LastName = "Купыр", Phone = "0995553311", AccountId = 5 },
+                    new Guest { Id = 6, FirstName = "Дима", LastName = "Жук", Phone = "0995553346", AccountId = 6 }
+                );
 
             modelBuilder.Entity<Department>().HasData(
-                    new Department { Id = 1, NameDepartment = "Бар" },
-                    new Department { Id = 2, NameDepartment = "Кухня" },
-                    new Department { Id = 3, NameDepartment = "Официанты" },
-                    new Department { Id = 4, NameDepartment = "Управляющие" }
-                );
+                        new Department { Id = 1, NameDepartment = "Бар" },
+                        new Department { Id = 2, NameDepartment = "Кухня" },
+                        new Department { Id = 3, NameDepartment = "Официанты" },
+                        new Department { Id = 4, NameDepartment = "Управляющие" }
+                    );
 
             modelBuilder.Entity<StatusOrder>().HasData(
                     new StatusOrder { Id = 1, NameStatus = "Счет открыт" },
-                    new StatusOrder { Id = 2, NameStatus = "Счет закрыт" }
+                    new StatusOrder { Id = 2, NameStatus = "Оплата" },
+                    new StatusOrder { Id = 3, NameStatus = "Счет закрыт" }
                 );
 
             modelBuilder.Entity<StatusOrderLine>().HasData(
@@ -125,6 +148,7 @@ namespace CateringManagementPlatform.DAL.EF
                 );
 
         }
+
     }
 }
 

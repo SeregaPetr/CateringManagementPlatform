@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using CateringManagementPlatform.BLL.Order.DTO.OrderDto;
 using CateringManagementPlatform.BLL.Order.DTO.OrderLineDtos;
 using CateringManagementPlatform.BLL.Platform.Interfaces;
-using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyValidationException;
 
@@ -27,7 +27,7 @@ namespace CateringManagementPlatform.Platform.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderLineReadDto>>> OrderLinesForWaiter()
         {
-            var orderLinesForWaiter = await _dataForDepartmentService.GetOrderLinesForWaiter();
+            var orderLinesForWaiter = await _dataForDepartmentService.GetOrderLinesForWaiterAsync();
             return Ok(orderLinesForWaiter);
         }
 
@@ -36,7 +36,7 @@ namespace CateringManagementPlatform.Platform.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderLineReadDto>>> OrderLinesForKitchen()
         {
-            var orderLinesForKitchen = await _dataForDepartmentService.GetOrderLinesForKitchen();
+            var orderLinesForKitchen = await _dataForDepartmentService.GetOrderLinesForKitchenAsync();
             return Ok(orderLinesForKitchen);
         }
 
@@ -45,39 +45,45 @@ namespace CateringManagementPlatform.Platform.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderLineReadDto>>> OrderLinesForBar()
         {
-            var orderLinesForBar = await _dataForDepartmentService.GetOrderLinesForBar();
+            var orderLinesForBar = await _dataForDepartmentService.GetOrderLinesForBarAsync();
             return Ok(orderLinesForBar);
         }
 
+        [Route("unpaid-orders")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OrderReadDto>>> UnpaidOrders()
+        {
+            var unpaidOrders = await _dataForDepartmentService.GetUnpaidOrdersAsync();
+            return Ok(unpaidOrders);
+        }
+
         // GET api/platform/order-for-guest
+        [Authorize]
         [Route("order-for-guest")]
         [HttpGet]
         public async Task<ActionResult<OrderReadDto>> OrdeForGuest()
         {
             int accountId = GetAccountId();
 
-            var orderLinesForBar = await _dataForDepartmentService.GetOrderForGuest(accountId);
+            var orderLinesForBar = await _dataForDepartmentService.GetOrderForGuestAsync(accountId);
             return Ok(orderLinesForBar);
         }
 
-        // POST api/platform/update-order-line
-        [Route("update-order-line")]
-        [HttpPost]
-        public async Task<ActionResult<OrderLineReadDto>> UpdateOrderLine(OrderLineUpdateDto orderLineUpdateDto)
+        // PUT api/platform/update-order-line/5
+        [Route("update-order-line/{id}")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateOrderLine(int id, OrderLineUpdateDto orderLineUpdateDto)
         {
-            if (orderLineUpdateDto == null)
+            if (id != orderLineUpdateDto?.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                var orderLineReadDto = await _dataForDepartmentService.UpdateOrderLineAsync(orderLineUpdateDto);
+                await _dataForDepartmentService.UpdateOrderLineAsync(orderLineUpdateDto);
 
-                string url = Request.GetEncodedUrl();
-
-                //  return CreatedAtAction(nameof(GetById), new { id = orderReadDto.Id }, orderReadDto);
-                return Created(url, orderLineReadDto);
+                return NoContent();
             }
             catch (ValidationException ex)
             {
@@ -89,10 +95,31 @@ namespace CateringManagementPlatform.Platform.Controllers
             }
         }
 
-        // POST api/platform/create-order
-        [Route("create-order")]
+        // PUT api/platform/confirm-payment/5
+        [Route("confirm-payment/{id}")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult> ConfirmPayment(int id)
+        {
+            try
+            {
+                await _dataForDepartmentService.ConfirmPaymentAsync(id);
+
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+        // POST api/platform/confirm-order
+        [Route("confirm-order")]
         [HttpPost]
-        public async Task<ActionResult<OrderReadDto>> CreateOrder(OrderCreateDto orderCreateDto)
+        public async Task<ActionResult> ConfirmOrder(OrderCreateDto orderCreateDto)
         {
             if (orderCreateDto == null)
             {
@@ -103,12 +130,37 @@ namespace CateringManagementPlatform.Platform.Controllers
             {
                 int accountId = GetAccountId();
 
-                var orderReadDto = await _dataForDepartmentService.CreateOrderAsync(orderCreateDto, accountId);
+                await _dataForDepartmentService.ConfirOrderAsync(orderCreateDto, accountId);
 
-                string url = Request.GetEncodedUrl();
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
 
-                //  return CreatedAtAction(nameof(GetById), new { id = orderReadDto.Id }, orderReadDto);
-                return Created(url, orderReadDto);
+        // POST api/platform/payment/5
+        [Route("payment/{id}")]
+        [HttpPost("{id}")]
+        public async Task<ActionResult> Payment(int id,OrderUpdateDto orderUpdateDto)
+        {
+            if (id != orderUpdateDto?.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                int accountId = GetAccountId();
+
+                await _dataForDepartmentService.PaymentAsync(orderUpdateDto, accountId);
+
+                return NoContent();
             }
             catch (ValidationException ex)
             {
@@ -123,32 +175,6 @@ namespace CateringManagementPlatform.Platform.Controllers
         private int GetAccountId()
         {
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        }
-
-        //PUT api/platforma/update-order/5
-        [Route("update-order/{id}")]
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateOrder(int id, OrderUpdateDto orderUpdateDto)
-        {
-            if (id != orderUpdateDto?.Id)
-            {
-                return BadRequest();
-            }
-
-            try
-            {
-                await _dataForDepartmentService.UpdateOrderAsync(orderUpdateDto);
-
-                return NoContent();
-            }
-            catch (ValidationException ex)
-            {
-                return Content(ex.Message);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
         }
 
     }

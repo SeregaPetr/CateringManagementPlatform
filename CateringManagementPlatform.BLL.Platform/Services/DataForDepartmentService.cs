@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -28,164 +29,171 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             _hubContext = hubContext;
         }
 
-        public async Task<OrderReadDto> CreateOrderAsync(OrderCreateDto orderCreateDto, int accountId)
+        public async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForBarAsync()
         {
-            int userId = await GetUserId(accountId);
-
-            orderCreateDto.WaiterId = 1;//TODO продумать установку официанта
-            orderCreateDto.GuestId = userId;
-
-            var orderReadDto = await _orderService.CreateAsync(orderCreateDto);
-
-            await SendFromClienToDepartment(orderCreateDto.OrderLines);
-
-            return orderReadDto;
+            return await GetOrderLinesForDepartmentAsync(DepartmentName.Bar);
         }
 
-        private async Task<int> GetUserId(int accountId)
+        public async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForKitchenAsync()
         {
-            var users = await _repository.Guests.GetAllAsync();
-            var userId = users.FirstOrDefault(u => u.AccountId == accountId).Id;
-            return userId;
+            return await GetOrderLinesForDepartmentAsync(DepartmentName.Kitchen);
         }
 
-        public async Task UpdateOrderAsync(OrderUpdateDto orderUpdateDto)
+        public async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForWaiterAsync()
         {
-            await _orderService.UpdateAsync(orderUpdateDto);
-
-            await SendFromClienToDepartment(orderUpdateDto.OrderLines);
+            return await GetOrderLinesForDepartmentAsync(DepartmentName.Waiters);
         }
 
-        public async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForBar()
+        public async Task<IEnumerable<OrderReadDto>> GetUnpaidOrdersAsync()
         {
-            return await GetOrderLinesForDepartment(DepartmentName.Bar);
+            return await GetUnpaidOrderAsync();
         }
 
-        public async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForKitchen()
-        {
-            return await GetOrderLinesForDepartment(DepartmentName.Kitchen);
-        }
-
-        public async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForWaiter()
+        private async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForDepartmentAsync(DepartmentName departmentName)
         {
             var orderLines = await _repository.OrderLines.GetAllAsync();
-            var orderLinesForWaiter = orderLines.Where(ol =>
-                ol.Order.StatusOrderId == (int)StatusNameOrder.Open
-                && (ol.StatusOrderLineId == (int)StatusNameOrderLine.OrderIsReady
-                || ol.StatusOrderLineId == (int)StatusNameOrderLine.Ordering)
-            );
-            return _mapper.Map<IEnumerable<OrderLineReadDto>>(orderLinesForWaiter);
+            IEnumerable<OrderLine> orderLinesForDepartment = new List<OrderLine>();
+
+            if (departmentName == DepartmentName.Kitchen || departmentName == DepartmentName.Bar)
+            {
+                orderLinesForDepartment = orderLines.Where(ol =>
+                     //(ol.Order.StatusOrderId == (int)NameStatusOrder.Open
+                     //|| ol.Order.StatusOrderId == (int)NameStatusOrder.Payment
+                     //|| ol.Order.StatusOrderId == (int)NameStatusOrder.Closed)&&
+                     ol.Dish.DepartmentId == (int)departmentName
+                    && (ol.StatusOrderLineId == (int)NameStatusOrderLine.NewOrder
+                    || ol.StatusOrderLineId == (int)NameStatusOrderLine.WorkOrder)
+                );
+            }
+            else if (departmentName == DepartmentName.Waiters)
+            {
+                orderLinesForDepartment = orderLines.Where(ol =>
+                    //(ol.Order.StatusOrderId == (int)NameStatusOrder.Open
+                    //|| ol.Order.StatusOrderId == (int)NameStatusOrder.Payment
+                    //|| ol.Order.StatusOrderId == (int)NameStatusOrder.Closed) &&
+                    (ol.StatusOrderLineId == (int)NameStatusOrderLine.OrderIsReady
+                    || ol.StatusOrderLineId == (int)NameStatusOrderLine.Ordering)
+                );
+            }
+            return _mapper.Map<IEnumerable<OrderLineReadDto>>(orderLinesForDepartment);
         }
 
-        public async Task<OrderReadDto> GetOrderForGuest(int accountId)
+        public async Task<OrderReadDto> GetOrderForGuestAsync(int accountId)
         {
-            int userId = await GetUserId(accountId);
+            int userId = await GetUserIdAsync(accountId);
+            var orderForUser = await OrderForGuestAsync(userId);
 
-            var order = await _repository.Orders.GetAllAsync();
+            OrderReadDto orderReadDto = new OrderReadDto();
 
-            var orderForUser = order.FirstOrDefault(o => o.GuestId == userId && o.StatusOrderId == (int)StatusNameOrder.Open);
-
-            var orderReadDto = _mapper.Map<OrderReadDto>(orderForUser);
             if (orderForUser != null)
             {
+                orderReadDto = _mapper.Map<OrderReadDto>(orderForUser);
                 var guest = await _repository.Guests.GetByIdAsync(orderForUser.GuestId);
                 orderReadDto.AccountId = guest.AccountId.ToString();
             }
             return orderReadDto;
         }
 
-        private async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForDepartment(DepartmentName departmentName)
+        public async Task UpdateOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto)
         {
-            var orderLines = await _repository.OrderLines.GetAllAsync();
-            var orderLinesForDepartment = orderLines.Where(ol =>
-                ol.Order.StatusOrderId == (int)StatusNameOrder.Open
-                && ol.Dish.DepartmentId == (int)departmentName
-                && (ol.StatusOrderLineId == (int)StatusNameOrderLine.NewOrder
-                || ol.StatusOrderLineId == (int)StatusNameOrderLine.WorkOrder)
-            );
-            return _mapper.Map<IEnumerable<OrderLineReadDto>>(orderLinesForDepartment);
+            OrderLine orderLine = await UpdateStatusOrderLineAsync(orderLineUpdateDto);
+
+            await SendToClienAsync(orderLine.OrderId);
+
+            if (orderLine.Dish.DepartmentId == (int)DepartmentName.Bar &&
+               (orderLine.StatusOrderLineId == (int)NameStatusOrderLine.WorkOrder ||
+                orderLine.StatusOrderLineId == (int)NameStatusOrderLine.OrderIsReady))
+            {
+                await SendToBarAsync();
+            }
+            else if (orderLine.Dish.DepartmentId == (int)DepartmentName.Kitchen &&
+                    (orderLine.StatusOrderLineId == (int)NameStatusOrderLine.WorkOrder ||
+                     orderLine.StatusOrderLineId == (int)NameStatusOrderLine.OrderIsReady))
+            {
+                await SendToKitchenAsync();
+            }
+            if (orderLine.StatusOrderLineId == (int)NameStatusOrderLine.OrderIsReady ||
+                orderLine.StatusOrderLineId == (int)NameStatusOrderLine.Ordering ||
+                orderLine.StatusOrderLineId == (int)NameStatusOrderLine.OrderFiled)
+            {
+                await SendToWaiterAsync();
+            }
         }
 
-        private async Task SendFromClienToDepartment(ICollection<OrderLineCreateDto> orderLines)
+        private async Task SendFromClienToDepartmentAsync(IEnumerable<int> departmentsId)
         {
-            bool sendKitchen = false;
-            bool sendBar = false;
-
-            foreach (var orderLine in orderLines)
+            foreach (var dpartmentId in departmentsId)
             {
-                var dish = await _repository.Dishes.GetByIdAsync(orderLine.DishId);
-
-                if (dish.DepartmentId == (int)DepartmentName.Bar)
+                if (dpartmentId == (int)DepartmentName.Bar)
                 {
-                    sendBar = true;
+                    await SendToBarAsync();
                 }
 
-                if (dish.DepartmentId == (int)DepartmentName.Kitchen)
+                if (dpartmentId == (int)DepartmentName.Kitchen)
                 {
-                    sendKitchen = true;
+                    await SendToKitchenAsync();
                 }
             }
-
-            if (sendBar)
-            {
-                await SendFromClienToBar();
-            }
-
-            if (sendKitchen)
-            {
-                await SendFromClienToKitchen();
-            }
         }
 
-        private async Task SendFromClienToBar()
+        private async Task SendToClienAsync(int orderId)
         {
-            var orderLinesForBar = await GetOrderLinesForDepartment(DepartmentName.Bar);
-
-            await _hubContext.Clients.All.SendAsync("sentFromClienToBar", orderLinesForBar);
-        }
-
-        private async Task SendFromClienToKitchen()
-        {
-            var orderLinesForKitchen = await GetOrderLinesForDepartment(DepartmentName.Kitchen);
-
-            await _hubContext.Clients.All.SendAsync("sentFromClienToKitchen", orderLinesForKitchen);
-        }
-
-        public async Task<OrderLineReadDto> UpdateOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto)
-        {
-            OrderLine orderLine = await UpdateStatusOrderLine(orderLineUpdateDto);
-
-            var order = await _repository.Orders.GetByIdAsync(orderLine.OrderId);
-
+            var order = await _repository.Orders.GetByIdAsync(orderId);
             await _hubContext.Clients.All.SendAsync("sentToClien", _mapper.Map<OrderReadDto>(order));
-
-            if (orderLine.StatusOrderLineId == (int)StatusNameOrderLine.OrderIsReady)
-            {
-                var orderLineForWaiter = await GetOrderLinesForWaiter();
-                await _hubContext.Clients.All.SendAsync("sentToWaiter", orderLineForWaiter);
-            }
-
-            return _mapper.Map<OrderLineReadDto>(orderLine);
         }
 
-        private async Task<OrderLine> UpdateStatusOrderLine(OrderLineUpdateDto orderLineUpdateDto)
+        private async Task SendToWaiterAsync()
+        {
+            var orderLineForWaiter = await GetOrderLinesForWaiterAsync();
+            await _hubContext.Clients.All.SendAsync("sentToWaiter", orderLineForWaiter);
+        }
+
+        private async Task SendOrdersForWaiterAsync()
+        {
+            IEnumerable<OrderReadDto> unpaidOrders = await GetUnpaidOrderAsync();
+            await _hubContext.Clients.All.SendAsync("sentOrdersForWaiter", unpaidOrders);
+        }
+
+        private async Task<IEnumerable<OrderReadDto>> GetUnpaidOrderAsync()
+        {
+            var orders = await _repository.Orders.GetAllAsync();
+
+            var unpaidOrder = orders.Where(o =>
+            o.StatusOrderId == (int)NameStatusOrder.Open || o.StatusOrderId == (int)NameStatusOrder.Payment);
+
+            return _mapper.Map<IEnumerable<OrderReadDto>>(unpaidOrder);
+        }
+
+        private async Task SendToBarAsync()
+        {
+            var orderLinesForBar = await GetOrderLinesForBarAsync();
+            await _hubContext.Clients.All.SendAsync("sentToBar", orderLinesForBar);
+        }
+
+        private async Task SendToKitchenAsync()
+        {
+            var orderLinesForKitchen = await GetOrderLinesForKitchenAsync();
+            await _hubContext.Clients.All.SendAsync("sentToKitchen", orderLinesForKitchen);
+        }
+
+        private async Task<OrderLine> UpdateStatusOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto)
         {
             var orderLine = await _repository.OrderLines.GetByIdAsync(orderLineUpdateDto.Id);
             orderLine.StatusOrderLine = null;
 
             switch (orderLine.StatusOrderLineId)
             {
-                case (int)StatusNameOrderLine.NewOrder:
-                    orderLine.StatusOrderLineId = (int)StatusNameOrderLine.WorkOrder;
+                case (int)NameStatusOrderLine.NewOrder:
+                    orderLine.StatusOrderLineId = (int)NameStatusOrderLine.WorkOrder;
                     break;
-                case (int)StatusNameOrderLine.WorkOrder:
-                    orderLine.StatusOrderLineId = (int)StatusNameOrderLine.OrderIsReady;
+                case (int)NameStatusOrderLine.WorkOrder:
+                    orderLine.StatusOrderLineId = (int)NameStatusOrderLine.OrderIsReady;
                     break;
-                case (int)StatusNameOrderLine.OrderIsReady:
-                    orderLine.StatusOrderLineId = (int)StatusNameOrderLine.Ordering;
+                case (int)NameStatusOrderLine.OrderIsReady:
+                    orderLine.StatusOrderLineId = (int)NameStatusOrderLine.Ordering;
                     break;
-                case (int)StatusNameOrderLine.Ordering:
-                    orderLine.StatusOrderLineId = (int)StatusNameOrderLine.OrderFiled;
+                case (int)NameStatusOrderLine.Ordering:
+                    orderLine.StatusOrderLineId = (int)NameStatusOrderLine.OrderFiled;
                     break;
             }
 
@@ -196,6 +204,107 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             return orderLine;
         }
 
+        public async Task ConfirOrderAsync(OrderCreateDto orderCreateDto, int accountId)
+        {
+            int userId = await GetUserIdAsync(accountId);
+            var orderGuest = await OrderForGuestAsync(userId);
+
+            if (orderGuest is null)
+            {
+                orderCreateDto.GuestId = userId;
+                orderCreateDto.WaiterId = ChoiceWaiterAsync();
+
+                await _orderService.CreateAsync(orderCreateDto);
+            }
+            else
+            {
+                OrderUpdateDto orderUpdateDto = new OrderUpdateDto
+                {
+                    Id = orderGuest.Id,
+                    PaymentTypeId = orderGuest.PaymentTypeId,
+                    StatusOrderId = orderGuest.StatusOrderId,
+                    OrderLines = orderCreateDto.OrderLines
+                };
+                await _orderService.UpdateAsync(orderUpdateDto);
+            }
+
+            var departmentsId = await DepartmentsIdToSendDataAsync(userId);
+
+            await SendFromClienToDepartmentAsync(departmentsId);
+            await SendOrdersForWaiterAsync();
+        }
+
+        public async Task PaymentAsync(OrderUpdateDto orderUpdateDto, int accountId)
+        {
+            int userId = await GetUserIdAsync(accountId);
+            var orderGuest = await OrderForGuestAsync(userId);
+
+            if (orderGuest != null)
+            {
+                OrderUpdateDto orderUpdate = new OrderUpdateDto
+                {
+                    Id = orderGuest.Id,
+                    PaymentTypeId = orderUpdateDto.PaymentTypeId,
+                    StatusOrderId = (int)NameStatusOrder.Payment,
+                    OrderLines = orderUpdateDto.OrderLines
+                };
+                await _orderService.UpdateAsync(orderUpdate);
+
+                await SendToClienAsync(orderGuest.Id);
+                await SendOrdersForWaiterAsync();
+            }
+        }
+
+        public async Task ConfirmPaymentAsync(int orderId)
+        {
+            var order = await _repository.Orders.GetByIdAsync(orderId);
+
+            OrderUpdateDto orderUpdate = new OrderUpdateDto
+            {
+                Id = order.Id,
+                PaymentTypeId = order.PaymentTypeId,
+                StatusOrderId = (int)NameStatusOrder.Closed,
+                CheckClosingTime = DateTime.Now
+            };
+            await _orderService.UpdateAsync(orderUpdate);
+
+            await SendToClienAsync(orderId);
+            await SendOrdersForWaiterAsync();
+        }
+
+        private async Task<DAL.Entities.Order> OrderForGuestAsync(int userId)
+        {
+            var orders = await _repository.Orders.GetAllAsync();
+            var orderGuest = orders.FirstOrDefault(o => o.GuestId == userId &&
+                (o.StatusOrderId == (int)NameStatusOrder.Open || o.StatusOrderId == (int)NameStatusOrder.Payment));
+            return orderGuest;
+        }
+
+        private async Task<IEnumerable<int>> DepartmentsIdToSendDataAsync(int userId)
+        {
+            var orders = await _repository.Orders.GetAllAsync();
+            var orderGuest = orders.FirstOrDefault(o => o.GuestId == userId &&
+                 (o.StatusOrderId == (int)NameStatusOrder.Open || o.StatusOrderId == (int)NameStatusOrder.Payment));
+
+            return orderGuest?.OrderLines.Select(o => o.Dish.DepartmentId).Distinct();
+        }
+
+        private int? ChoiceWaiterAsync() //TODO продумать установку официанта
+        {
+            return 4;
+        }
+
+        private async Task<int> GetUserIdAsync(int accountId)
+        {
+            var users = await _repository.Guests.GetAllAsync();
+            var userId = users.FirstOrDefault(u => u.AccountId == accountId).Id;
+            return userId;
+        }
+
+        public void Dispose()
+        {
+            _repository.Dispose();
+        }
 
     }
 }

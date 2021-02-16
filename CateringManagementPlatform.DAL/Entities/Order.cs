@@ -10,8 +10,8 @@ namespace CateringManagementPlatform.DAL.Entities
     {
         [Key]
         public int Id { get; set; }
-        public DateTime OpeningTimeCheck { get; set; }
-        public DateTime? СlosingЕimeСheck { get; set; }
+        public DateTime CheckOpeningTime { get; set; }
+        public DateTime? CheckClosingTime { get; set; }
 
         public int StatusOrderId { get; set; }
         public StatusOrder StatusOrder { get; set; }
