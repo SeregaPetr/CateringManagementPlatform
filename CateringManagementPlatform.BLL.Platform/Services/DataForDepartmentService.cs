@@ -44,11 +44,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             return await GetOrderLinesForDepartmentAsync(DepartmentName.Waiters);
         }
 
-        public async Task<IEnumerable<OrderReadDto>> GetUnpaidOrdersAsync()
-        {
-            return await GetUnpaidOrderAsync();
-        }
-
         private async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForDepartmentAsync(DepartmentName departmentName)
         {
             var orderLines = await _repository.OrderLines.GetAllAsync();
@@ -57,10 +52,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             if (departmentName == DepartmentName.Kitchen || departmentName == DepartmentName.Bar)
             {
                 orderLinesForDepartment = orderLines.Where(ol =>
-                     //(ol.Order.StatusOrderId == (int)NameStatusOrder.Open
-                     //|| ol.Order.StatusOrderId == (int)NameStatusOrder.Payment
-                     //|| ol.Order.StatusOrderId == (int)NameStatusOrder.Closed)&&
-                     ol.Dish.DepartmentId == (int)departmentName
+                    ol.Dish.DepartmentId == (int)departmentName
                     && (ol.StatusOrderLineId == (int)NameStatusOrderLine.NewOrder
                     || ol.StatusOrderLineId == (int)NameStatusOrderLine.WorkOrder)
                 );
@@ -68,9 +60,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             else if (departmentName == DepartmentName.Waiters)
             {
                 orderLinesForDepartment = orderLines.Where(ol =>
-                    //(ol.Order.StatusOrderId == (int)NameStatusOrder.Open
-                    //|| ol.Order.StatusOrderId == (int)NameStatusOrder.Payment
-                    //|| ol.Order.StatusOrderId == (int)NameStatusOrder.Closed) &&
                     (ol.StatusOrderLineId == (int)NameStatusOrderLine.OrderIsReady
                     || ol.StatusOrderLineId == (int)NameStatusOrderLine.Ordering)
                 );
@@ -78,20 +67,20 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             return _mapper.Map<IEnumerable<OrderLineReadDto>>(orderLinesForDepartment);
         }
 
+        public async Task<IEnumerable<OrderReadDto>> GetUnpaidOrdersAsync()
+        {
+            return await GetUnpaidOrderAsync();
+        }
+
         public async Task<OrderReadDto> GetOrderForGuestAsync(int accountId)
         {
             int userId = await GetUserIdAsync(accountId);
+
             var orderForUser = await OrderForGuestAsync(userId);
 
-            OrderReadDto orderReadDto = new OrderReadDto();
+            OrderReadDto orderReadDto = _mapper.Map<OrderReadDto>(orderForUser);
 
-            if (orderForUser != null)
-            {
-                orderReadDto = _mapper.Map<OrderReadDto>(orderForUser);
-                var guest = await _repository.Guests.GetByIdAsync(orderForUser.GuestId);
-                orderReadDto.AccountId = guest.AccountId.ToString();
-            }
-            return orderReadDto;
+            return orderReadDto ?? new OrderReadDto();
         }
 
         public async Task UpdateOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto)
@@ -136,6 +125,18 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             }
         }
 
+        private async Task SendToBarAsync()
+        {
+            var orderLinesForBar = await GetOrderLinesForBarAsync();
+            await _hubContext.Clients.All.SendAsync("sentToBar", orderLinesForBar);
+        }
+
+        private async Task SendToKitchenAsync()
+        {
+            var orderLinesForKitchen = await GetOrderLinesForKitchenAsync();
+            await _hubContext.Clients.All.SendAsync("sentToKitchen", orderLinesForKitchen);
+        }
+
         private async Task SendToClienAsync(int orderId)
         {
             var order = await _repository.Orders.GetByIdAsync(orderId);
@@ -152,6 +153,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
         {
             IEnumerable<OrderReadDto> unpaidOrders = await GetUnpaidOrderAsync();
             await _hubContext.Clients.All.SendAsync("sentOrdersForWaiter", unpaidOrders);
+           // await _hubContext.Clients.Client(connectionId).SendAsync("sentOrdersForWaiter", unpaidOrders);
         }
 
         private async Task<IEnumerable<OrderReadDto>> GetUnpaidOrderAsync()
@@ -162,18 +164,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             o.StatusOrderId == (int)NameStatusOrder.Open || o.StatusOrderId == (int)NameStatusOrder.Payment);
 
             return _mapper.Map<IEnumerable<OrderReadDto>>(unpaidOrder);
-        }
-
-        private async Task SendToBarAsync()
-        {
-            var orderLinesForBar = await GetOrderLinesForBarAsync();
-            await _hubContext.Clients.All.SendAsync("sentToBar", orderLinesForBar);
-        }
-
-        private async Task SendToKitchenAsync()
-        {
-            var orderLinesForKitchen = await GetOrderLinesForKitchenAsync();
-            await _hubContext.Clients.All.SendAsync("sentToKitchen", orderLinesForKitchen);
         }
 
         private async Task<OrderLine> UpdateStatusOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto)
@@ -223,7 +213,8 @@ namespace CateringManagementPlatform.BLL.Platform.Services
                     Id = orderGuest.Id,
                     PaymentTypeId = orderGuest.PaymentTypeId,
                     StatusOrderId = orderGuest.StatusOrderId,
-                    OrderLines = orderCreateDto.OrderLines
+                    OrderLines = orderCreateDto.OrderLines,
+
                 };
                 await _orderService.UpdateAsync(orderUpdateDto);
             }

@@ -139,7 +139,7 @@ namespace CateringManagementPlatform.DAL.EF
                 );
 
             modelBuilder.Entity<Table>().HasData(
-                new Table { Id = 1, NumberTable = 5, IsReservation = false, DateReservation = null, CapacityTable = 10, NumberGuests = null }
+                new Table { Id = 1, NumberTable = 5, IsReservation = false, CapacityTable = 10, NumberGuests = null }
                 );
 
             modelBuilder.Entity<PaymentType>().HasData(

@@ -147,7 +147,7 @@ namespace CateringManagementPlatform.Platform.Controllers
         // POST api/platform/payment/5
         [Route("payment/{id}")]
         [HttpPost("{id}")]
-        public async Task<ActionResult> Payment(int id,OrderUpdateDto orderUpdateDto)
+        public async Task<ActionResult> Payment(int id, OrderUpdateDto orderUpdateDto)
         {
             if (id != orderUpdateDto?.Id)
             {

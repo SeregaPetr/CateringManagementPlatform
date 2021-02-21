@@ -15,7 +15,7 @@ namespace CateringManagementPlatform.DAL.Entities
 
         public int StatusOrderId { get; set; }
         public StatusOrder StatusOrder { get; set; }
-        public int TableId { get; set; }
+        public int? TableId { get; set; }
         public Table Table { get; set; }
         public int? PaymentTypeId { get; set; }
         public PaymentType PaymentType { get; set; }

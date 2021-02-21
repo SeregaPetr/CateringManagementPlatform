@@ -9,8 +9,5 @@ namespace CateringManagementPlatform.BLL.AdminPanel.DTO.TableDtos
 
         [Required]
         public int CapacityTable { get; set; }
-
-        [Required]
-        public int WaiterId { get; set; }
     }
 }

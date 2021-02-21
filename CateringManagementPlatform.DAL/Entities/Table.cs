@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Entities
 {
+    [Index("NumberTable", IsUnique = true)]
     public class Table
     {
         [Key]
@@ -14,8 +16,6 @@ namespace CateringManagementPlatform.DAL.Entities
 
         [Required]
         public bool IsReservation { get; set; }
-
-        public DateTime? DateReservation { get; set; }
 
         [Required]
         public int CapacityTable { get; set; }
