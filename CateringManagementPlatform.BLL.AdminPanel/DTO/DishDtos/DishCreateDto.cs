@@ -17,9 +17,6 @@ namespace CateringManagementPlatform.BLL.AdminPanel.DTO.DishDtos
         public decimal Price { get; set; }
 
         [Required]
-        public int MenuCategoryId { get; set; }
-
-        [Required]
         public int DepartmentId { get; set; }
     }
 }

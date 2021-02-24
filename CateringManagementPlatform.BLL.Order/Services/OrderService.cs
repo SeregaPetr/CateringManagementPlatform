@@ -61,18 +61,24 @@ namespace CateringManagementPlatform.BLL.Order.Services
         private async Task<DAL.Entities.Order> CreateOrderAsync(OrderCreateDto orderCreateDto)
         {
             var tables = await _repository.Tables.GetAllAsync();
-            int tableId = tables.First(t => t.NumberTable == orderCreateDto.NumberTable).Id;
+            var table = tables.First(t => t.NumberTable == orderCreateDto.NumberTable);
 
             var orderTemp = new DAL.Entities.Order()
             {
                 CheckOpeningTime = DateTime.Now,
                 StatusOrderId = (int)NameStatusOrder.Open,
-                TableId = tableId,
+                TableId = table.Id,
                 GuestId = orderCreateDto.GuestId.Value,
                 WaiterId = orderCreateDto.WaiterId.Value
             };
             _repository.Orders.Create(orderTemp);
+
+            table.IsReservation = true;
+            table.NumberGuests = orderCreateDto.NumberGuests;
+            _repository.Tables.Update(table);
+
             await _repository.SaveAsync();
+
             return orderTemp;
         }
 

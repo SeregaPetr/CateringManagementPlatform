@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using CateringManagementPlatform.BLL.Order.DTO.MenuDtos;
-using CateringManagementPlatform.BLL.Order.Interfaces;
+using CateringManagementPlatform.BLL.AdminPanel.DTO.MenuDtos;
+using CateringManagementPlatform.BLL.AdminPanel.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 

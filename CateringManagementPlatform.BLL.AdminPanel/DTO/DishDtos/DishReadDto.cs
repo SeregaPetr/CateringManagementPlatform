@@ -1,4 +1,6 @@
-﻿namespace CateringManagementPlatform.BLL.AdminPanel.DTO.DishDtos
+﻿using CateringManagementPlatform.BLL.AdminPanel.DTO.DepartmentDtos;
+
+namespace CateringManagementPlatform.BLL.AdminPanel.DTO.DishDtos
 {
     public class DishReadDto
     {
@@ -7,10 +9,6 @@
         public string CompositionDish { get; set; }
         public int Weight { get; set; }
         public decimal Price { get; set; }
-        //    public bool IsArchive { get; set; }
-        public string MenuCategoryId { get; set; }
-        public string NameMenuCategory { get; set; }
-        public string DepartmentId { get; set; }
-        public string NameDepartment { get; set; }
+        public DepartmentReadDto Department { get; set; }
     }
 }

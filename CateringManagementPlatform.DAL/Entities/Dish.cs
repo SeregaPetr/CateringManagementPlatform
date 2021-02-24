@@ -23,10 +23,10 @@ namespace CateringManagementPlatform.DAL.Entities
         [Required]
         public bool IsArchive { get; set; }
 
-        public int MenuCategoryId { get; set; }
-        public MenuCategory MenuCategory { get; set; }
         public int DepartmentId { get; set; }
         public Department Department { get; set; }
+
         public ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
+        public ICollection<MenuCategoryMenu> MenuCategoryMenus { get; set; } = new List<MenuCategoryMenu>();
     }
 }

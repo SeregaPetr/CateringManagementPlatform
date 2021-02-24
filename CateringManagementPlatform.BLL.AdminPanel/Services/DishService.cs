@@ -27,6 +27,9 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             {
                 throw new ValidationException("Введите данные", "");
             }
+
+            await TestForDishExistence(dishCreateDto.NameDish);
+
             var dish = _mapper.Map<Dish>(dishCreateDto);
 
             _repository.Dishes.Create(dish);
@@ -58,8 +61,36 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             {
                 throw new ValidationException("Блюдо не найден", "");
             }
-            dish.IsArchive = dishUpdateDto.IsArchive;
 
+            if (!dish.NameDish.Equals(dishUpdateDto.NameDish))
+            {
+                await TestForDishExistence(dishUpdateDto.NameDish);
+            }
+            var dishUpdate = _mapper.Map<Dish>(dishUpdateDto);
+
+            _repository.Dishes.Update(dishUpdate);
+            await _repository.SaveAsync();
+        }
+
+        private async Task TestForDishExistence(string nameDish)
+        {
+            var dishes = await _repository.Dishes.GetAllAsync();
+            var dishExists = dishes.Any(t => t.NameDish.Equals(nameDish) && t.IsArchive == false);
+
+            if (dishExists)
+            {
+                throw new ValidationException("Блюдо уже существует", "");
+            }
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var dish = await _repository.Dishes.GetByIdAsync(id);
+            if (dish == null || dish.IsArchive == true)
+            {
+                throw new ValidationException("Стол не найден", "");
+            }
+            dish.IsArchive = true;
             _repository.Dishes.Update(dish);
             await _repository.SaveAsync();
         }

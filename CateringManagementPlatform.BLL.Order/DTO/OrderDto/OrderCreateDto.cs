@@ -9,15 +9,13 @@ namespace CateringManagementPlatform.BLL.Order.DTO.OrderDto
         [Required]
         public int NumberTable { get; set; }
 
+        [Required]
+        public int NumberGuests { get; set; }
+
         public int? GuestId { get; set; }
 
         public int? WaiterId { get; set; }
 
-        public ICollection<OrderLineCreateDto> OrderLines { get; set; }
-
-        public OrderCreateDto()
-        {
-            OrderLines = new List<OrderLineCreateDto>();
-        }
+        public ICollection<OrderLineCreateDto> OrderLines { get; set; } = new List<OrderLineCreateDto>();
     }
 }

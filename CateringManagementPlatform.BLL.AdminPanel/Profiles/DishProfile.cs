@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CateringManagementPlatform.BLL.AdminPanel.DTO.DepartmentDtos;
 using CateringManagementPlatform.BLL.AdminPanel.DTO.DishDtos;
 using CateringManagementPlatform.DAL.Entities;
 
@@ -8,10 +9,11 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Profiles
     {
         public DishProfile()
         {
-            CreateMap<DishCreateDto, Dish>();
             CreateMap<Dish, DishReadDto>()
-                .ForMember("NameMenuCategory", opt => opt.MapFrom(d => d.MenuCategory.NameCategory))
-                .ForMember("NameDepartment", opt => opt.MapFrom(d => d.Department.NameDepartment));
+                .ForMember("Department", opt => opt.MapFrom(d =>
+                     new DepartmentReadDto { Id = d.Department.Id, NameDepartment = d.Department.NameDepartment }));
+            CreateMap<DishUpdateDto, Dish>();
+            CreateMap<DishCreateDto, Dish>();
         }
     }
 }

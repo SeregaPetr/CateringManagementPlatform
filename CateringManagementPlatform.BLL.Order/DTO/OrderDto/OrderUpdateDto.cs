@@ -14,16 +14,8 @@ namespace CateringManagementPlatform.BLL.Order.DTO.OrderDto
         [Required]
         public int StatusOrderId { get; set; }
 
-        //[Required]
-        //public int NumberTable { get; set; }
-
         public int? PaymentTypeId { get; set; }
 
-        public ICollection<OrderLineCreateDto> OrderLines { get; set; }
-
-        public OrderUpdateDto()
-        {
-            OrderLines = new List<OrderLineCreateDto>();
-        }
+        public ICollection<OrderLineCreateDto> OrderLines { get; set; } = new List<OrderLineCreateDto>();
     }
 }

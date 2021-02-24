@@ -15,14 +15,19 @@ namespace CateringManagementPlatform.DAL.Entities
 
         public int StatusOrderId { get; set; }
         public StatusOrder StatusOrder { get; set; }
+
         public int? TableId { get; set; }
         public Table Table { get; set; }
+
         public int? PaymentTypeId { get; set; }
         public PaymentType PaymentType { get; set; }
+
         public int GuestId { get; set; }
         public Guest Guest { get; set; }
+
         public int WaiterId { get; set; }
         public Waiter Waiter { get; set; }
+
         public ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
     }
 }

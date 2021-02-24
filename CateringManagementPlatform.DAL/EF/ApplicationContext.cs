@@ -9,7 +9,7 @@ namespace CateringManagementPlatform.DAL.EF
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> opt) : base(opt)
         {
-          //  Database.EnsureDeleted();
+            //  Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -35,8 +35,8 @@ namespace CateringManagementPlatform.DAL.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
-             .Entity<Account>()
+
+            modelBuilder.Entity<Account>()
              .HasMany(p => p.UserRoles)
              .WithMany(p => p.Accounts)
              .UsingEntity(j => j.ToTable("AccountUserRole"));
@@ -59,22 +59,14 @@ namespace CateringManagementPlatform.DAL.EF
                 );
 
             modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
-               .UsingEntity(j => j.HasData(new { AccountsId = 1, UserRolesId = 1 }));
-
-            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
-                .UsingEntity(j => j.HasData(new { AccountsId = 2, UserRolesId = 2 }));
-
-            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
-                .UsingEntity(j => j.HasData(new { AccountsId = 3, UserRolesId = 3 }));
-
-            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
-                .UsingEntity(j => j.HasData(new { AccountsId = 4, UserRolesId = 4 }));
-
-            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
-                .UsingEntity(j => j.HasData(new { AccountsId = 5, UserRolesId = 5 }));
-
-            modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
-                .UsingEntity(j => j.HasData(new { AccountsId = 6, UserRolesId = 5 }));
+               .UsingEntity(j => j.HasData(
+                   new { AccountsId = 1, UserRolesId = 1 },
+                   new { AccountsId = 2, UserRolesId = 2 },
+                   new { AccountsId = 3, UserRolesId = 3 },
+                   new { AccountsId = 4, UserRolesId = 4 },
+                   new { AccountsId = 5, UserRolesId = 5 },
+                   new { AccountsId = 6, UserRolesId = 5 }
+                ));
 
             modelBuilder.Entity<Manager>().HasData(
                     new Manager { Id = 1, FirstName = "Вася", LastName = "Пупкин", DepartmentId = (int)DepartmentName.Managers, AccountId = 1 }
@@ -98,10 +90,10 @@ namespace CateringManagementPlatform.DAL.EF
                 );
 
             modelBuilder.Entity<Department>().HasData(
-                        new Department { Id = 1, NameDepartment = "Бар" },
-                        new Department { Id = 2, NameDepartment = "Кухня" },
-                        new Department { Id = 3, NameDepartment = "Официанты" },
-                        new Department { Id = 4, NameDepartment = "Управляющие" }
+                        new Department { Id = 1, NameDepartment = "Управляющие" },
+                        new Department { Id = 2, NameDepartment = "Бар" },
+                        new Department { Id = 3, NameDepartment = "Кухня" },
+                        new Department { Id = 4, NameDepartment = "Официанты" }
                     );
 
             modelBuilder.Entity<StatusOrder>().HasData(
@@ -118,29 +110,78 @@ namespace CateringManagementPlatform.DAL.EF
                     new StatusOrderLine { Id = 5, NameStatus = "заказ подан" }
                 );
 
-            modelBuilder.Entity<Menu>().HasData(
-                    new Menu { Id = 1, IsActive = false, NameMenu = "Основное" }
-                );
+            Dish shashlik = new Dish { Id = 1, NameDish = "Шашлык", CompositionDish = "Мясо", Weight = 150, Price = 150, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen };
+            Dish lula = new Dish { Id = 2, NameDish = "Люля", CompositionDish = "Курица", Weight = 150, Price = 200, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen };
+            Dish beer = new Dish { Id = 3, NameDish = "Пиво", CompositionDish = "Оболонь", Weight = 500, Price = 50, IsArchive = false, DepartmentId = (int)DepartmentName.Bar };
+            Dish wine = new Dish { Id = 4, NameDish = "Вино", CompositionDish = "Крым", Weight = 750, Price = 350, IsArchive = false, DepartmentId = (int)DepartmentName.Bar };
+            Dish rum = new Dish { Id = 5, NameDish = "Ром", CompositionDish = "Италия", Weight = 750, Price = 700, IsArchive = false, DepartmentId = (int)DepartmentName.Bar };
+            Dish potato = new Dish { Id = 6, NameDish = "Картошка", CompositionDish = "Жаринная", Weight = 200, Price = 50, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen };
+            Dish roast = new Dish { Id = 7, NameDish = "Поджарка", CompositionDish = "Мясо", Weight = 150, Price = 100, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen };
 
-            modelBuilder.Entity<MenuCategory>().HasData(
-                    new MenuCategory { Id = 1, NameCategory = "Мангал", MenuId = 1 },
-                    new MenuCategory { Id = 2, NameCategory = "Алкоголь", MenuId = 1 },
-                    new MenuCategory { Id = 3, NameCategory = "Гарнир", MenuId = 1 }
-                );
+            MenuCategory grill = new MenuCategory { Id = 1, NameCategory = "Мангал" };
+            MenuCategory alcohol = new MenuCategory { Id = 2, NameCategory = "Алкоголь" };
+            MenuCategory garnish = new MenuCategory { Id = 3, NameCategory = "Гарнир" };
 
-            modelBuilder.Entity<Dish>().HasData(
-                    new Dish { Id = 1, NameDish = "Шашлык", CompositionDish = "Мясо", Weight = 150, Price = 150, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen, MenuCategoryId = 1 },
-                    new Dish { Id = 2, NameDish = "Люля", CompositionDish = "Курица", Weight = 150, Price = 200, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen, MenuCategoryId = 1 },
-                    new Dish { Id = 3, NameDish = "Пиво", CompositionDish = "Оболонь", Weight = 500, Price = 50, IsArchive = false, DepartmentId = (int)DepartmentName.Bar, MenuCategoryId = 2 },
-                    new Dish { Id = 4, NameDish = "Вино", CompositionDish = "Крым", Weight = 750, Price = 350, IsArchive = false, DepartmentId = (int)DepartmentName.Bar, MenuCategoryId = 2 },
-                    new Dish { Id = 5, NameDish = "Ром", CompositionDish = "Италия", Weight = 750, Price = 700, IsArchive = false, DepartmentId = (int)DepartmentName.Bar, MenuCategoryId = 2 },
-                    new Dish { Id = 6, NameDish = "Картошка", CompositionDish = "Жаринная", Weight = 200, Price = 50, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen, MenuCategoryId = 3 },
-                    new Dish { Id = 7, NameDish = "Пожарка", CompositionDish = "Мясо", Weight = 150, Price = 100, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen, MenuCategoryId = 3 }
-                );
+            Menu baseMenu = new Menu { Id = 1, IsActive = false, NameMenu = "Основное" };
+            Menu resMenu = new Menu { Id = 2, IsActive = true, NameMenu = "Резервное" };
+
+            modelBuilder.Entity<Dish>().HasData(shashlik, lula, beer, wine, rum, potato, roast);
+            modelBuilder.Entity<MenuCategory>().HasData(grill, alcohol, garnish);
+            modelBuilder.Entity<Menu>().HasData(baseMenu, resMenu);
+
+            modelBuilder.Entity<Menu>()
+              .HasMany(m => m.MenuCategories)
+              .WithMany(mc => mc.Menus)
+              .UsingEntity<MenuCategoryMenu>(
+                   j => j
+                      .HasOne(pt => pt.MenuCategory)
+                      .WithMany(t => t.MenuCategoryMenus)
+                      .HasForeignKey(pt => pt.MenuCategoryId),
+                   j => j
+                       .HasOne(pt => pt.Menu)
+                       .WithMany(p => p.MenuCategoryMenus)
+                       .HasForeignKey(pt => pt.MenuId),
+                   j =>
+                   {
+                       j.ToTable("MenuCategoryMenus");
+                   }
+               );
+
+            modelBuilder.Entity<Menu>().HasMany(p => p.MenuCategories).WithMany(p => p.Menus)
+              .UsingEntity(j => j
+              .HasData(
+                  new { MenuId = baseMenu.Id, MenuCategoryId = grill.Id },
+                  new { MenuId = baseMenu.Id, MenuCategoryId = alcohol.Id },
+                  new { MenuId = baseMenu.Id, MenuCategoryId = garnish.Id },
+
+                  new { MenuId = resMenu.Id, MenuCategoryId = grill.Id },
+                  new { MenuId = resMenu.Id, MenuCategoryId = alcohol.Id }
+              ));
+
+            modelBuilder.Entity<Dish>().HasMany(d => d.MenuCategoryMenus).WithMany(m => m.Dishes)
+                .UsingEntity(j => j
+                .HasData(
+                    new { MenuCategoryMenusMenuId = baseMenu.Id, MenuCategoryMenusMenuCategoryId = grill.Id, DishesId = shashlik.Id },
+                    new { MenuCategoryMenusMenuId = baseMenu.Id, MenuCategoryMenusMenuCategoryId = grill.Id, DishesId = lula.Id },
+
+                    new { MenuCategoryMenusMenuId = baseMenu.Id, MenuCategoryMenusMenuCategoryId = garnish.Id, DishesId = potato.Id },
+                    new { MenuCategoryMenusMenuId = baseMenu.Id, MenuCategoryMenusMenuCategoryId = garnish.Id, DishesId = roast.Id },
+
+                    new { MenuCategoryMenusMenuId = baseMenu.Id, MenuCategoryMenusMenuCategoryId = alcohol.Id, DishesId = beer.Id },
+                    new { MenuCategoryMenusMenuId = baseMenu.Id, MenuCategoryMenusMenuCategoryId = alcohol.Id, DishesId = wine.Id },
+                    new { MenuCategoryMenusMenuId = baseMenu.Id, MenuCategoryMenusMenuCategoryId = alcohol.Id, DishesId = rum.Id },
+
+
+                    new { MenuCategoryMenusMenuId = resMenu.Id, MenuCategoryMenusMenuCategoryId = grill.Id, DishesId = shashlik.Id },
+                    new { MenuCategoryMenusMenuId = resMenu.Id, MenuCategoryMenusMenuCategoryId = grill.Id, DishesId = lula.Id },
+
+                    new { MenuCategoryMenusMenuId = resMenu.Id, MenuCategoryMenusMenuCategoryId = alcohol.Id, DishesId = beer.Id },
+                    new { MenuCategoryMenusMenuId = resMenu.Id, MenuCategoryMenusMenuCategoryId = alcohol.Id, DishesId = wine.Id }
+                    ));
 
             modelBuilder.Entity<Table>().HasData(
-                new Table { Id = 1, NumberTable = 5, IsReservation = false, CapacityTable = 10, NumberGuests = null }
-                );
+                 new Table { Id = 1, NumberTable = 5, IsReservation = false, CapacityTable = 10, NumberGuests = null, IsActive = false }
+                 );
 
             modelBuilder.Entity<PaymentType>().HasData(
                 new PaymentType { Id = 1, NamePaymentType = "Наличные" },

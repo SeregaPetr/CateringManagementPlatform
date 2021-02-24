@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CateringManagementPlatform.BLL.Order.DTO.DishDtos;
 using CateringManagementPlatform.DAL.Entities;
 
 namespace CateringManagementPlatform.BLL.Order.Profiles
@@ -8,7 +7,7 @@ namespace CateringManagementPlatform.BLL.Order.Profiles
     {
         public DishProfile()
         {
-            CreateMap<Dish, DishReadDto>();
+          //  CreateMap<Dish, DishReadDto>();
         }
     }
 }

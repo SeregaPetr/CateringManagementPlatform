@@ -99,5 +99,24 @@ namespace CateringManagementPlatform.API.Controllers
                 return NotFound();
             }
         }
+
+        // DELETE api/dish/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                await _dishService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
     }
 }

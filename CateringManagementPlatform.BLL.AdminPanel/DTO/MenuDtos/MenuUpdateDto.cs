@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CateringManagementPlatform.BLL.AdminPanel.DTO.MenuDtos
 {
-    class MenuUpdateDto
+    public class MenuUpdateDto
     {
+        public int Id { get; set; }
+
+        [Required]
+        public string NameMenu { get; set; }
     }
 }

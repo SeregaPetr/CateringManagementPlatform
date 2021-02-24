@@ -69,7 +69,7 @@ namespace CateringManagementPlatform.API
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddAdminPanelService();
-            services.AddScoped<IMenuService, MenuService>();
+            //services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IOrderService, OrderService>();
 
             services.AddOrderLibrary(Configuration.GetConnectionString("CateringManagementPlatform"));

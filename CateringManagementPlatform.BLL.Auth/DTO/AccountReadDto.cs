@@ -10,6 +10,5 @@ namespace CateringManagementPlatform.BLL.Auth.DTO
         public string Password { get; set; }
 
         public ICollection<UserRole> Roles { get; set; } = new List<UserRole>();
-    //    public Person Person { get; set; }
     }
 }

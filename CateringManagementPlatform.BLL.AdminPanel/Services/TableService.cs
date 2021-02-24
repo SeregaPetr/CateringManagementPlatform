@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CateringManagementPlatform.BLL.AdminPanel.DTO.TableDtos;
@@ -26,6 +27,9 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             {
                 throw new ValidationException("Введите данные", "");
             }
+
+            await TestForTableExistence(tableCreateDto.NumberTable);
+
             var table = _mapper.Map<Table>(tableCreateDto);
 
             _repository.Tables.Create(table);
@@ -34,27 +38,40 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             return table.Id;
         }
 
+        private async Task TestForTableExistence(int numberTable)
+        {
+            var tables = await _repository.Tables.GetAllAsync();
+            var tableExists = tables.Any(t => t.NumberTable == numberTable && t.IsActive == false);
+
+            if (tableExists)
+            {
+                throw new ValidationException("Стол уже существует", "");
+            }
+        }
+
         public async Task DeleteAsync(int id)
         {
             var table = await _repository.Tables.GetByIdAsync(id);
-            if (table == null)
+            if (table == null || table.IsActive == true)
             {
                 throw new ValidationException("Стол не найден", "");
             }
-            _repository.Tables.Delete(table);
+            table.IsActive = true;
+            _repository.Tables.Update(table);
             await _repository.SaveAsync();
         }
 
         public async Task<IEnumerable<TableReadDto>> GetAllAsync()
         {
-            var tables = await _repository.Tables.GetAllAsync();
+            var allTables = await _repository.Tables.GetAllAsync();
+            var tables = allTables.Where(t => t.IsActive == false);
             return _mapper.Map<IEnumerable<TableReadDto>>(tables);
         }
 
         public async Task<TableReadDto> GetByIdAsync(int id)
         {
             var table = await _repository.Tables.GetByIdAsync(id);
-            if (table == null)
+            if (table == null || table.IsActive == true)
             {
                 throw new ValidationException("Стол не найден", "");
             }
@@ -64,11 +81,15 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
         public async Task UpdateAsync(TableUpdateDto tableUpdateDto)
         {
             var table = await _repository.Tables.GetByIdAsync(tableUpdateDto.Id);
-            if (table == null)
+            if (table == null || table.IsActive == true)
             {
                 throw new ValidationException("Стол не найден", "");
             }
 
+            if (table.NumberTable != tableUpdateDto.NumberTable)
+            {
+                await TestForTableExistence(tableUpdateDto.NumberTable);
+            }
             table = _mapper.Map<Table>(tableUpdateDto);
 
             _repository.Tables.Update(table);

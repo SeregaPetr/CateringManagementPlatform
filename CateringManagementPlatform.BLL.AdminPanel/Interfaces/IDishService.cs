@@ -10,6 +10,7 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Interfaces
         Task<DishReadDto> GetByIdAsync(int id);
         Task<int> CreateAsync(DishCreateDto dishCreateDto);
         Task UpdateAsync(DishUpdateDto dishUpdateDto);
+        Task DeleteAsync(int id);
         void Dispose();
     }
 }

@@ -30,8 +30,10 @@ namespace CateringManagementPlatform.DAL.Repositories
         public async Task<IEnumerable<Menu>> GetAllAsync()
         {
             return await _context.Menus
-                .Include(m=>m.MenuCategories)
-                    .ThenInclude(mc=>mc.Dishes)
+                .Include(m => m.MenuCategories)
+                    .ThenInclude(mcm => mcm.MenuCategoryMenus)
+                .Include(m => m.MenuCategoryMenus)
+                    .ThenInclude(mcm => mcm.Dishes)
                 .AsNoTracking().ToListAsync();
         }
 
@@ -39,7 +41,9 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             return await _context.Menus.AsNoTracking()
                 .Include(m => m.MenuCategories)
-                    .ThenInclude(mc => mc.Dishes)
+                    .ThenInclude(mcm => mcm.MenuCategoryMenus)
+                .Include(m => m.MenuCategoryMenus)
+                    .ThenInclude(mcm => mcm.Dishes)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
