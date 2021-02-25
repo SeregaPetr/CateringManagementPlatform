@@ -18,6 +18,7 @@ namespace CateringManagementPlatform.DAL.Entities
     {
         Open = 1,       //счет открыт     ->user
         Payment,        //оплата          ->user
+       // Paid,           //оплачен
         Closed,         //счет закрыт     ->
     }
 }

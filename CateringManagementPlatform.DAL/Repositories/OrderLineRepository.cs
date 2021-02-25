@@ -34,6 +34,8 @@ namespace CateringManagementPlatform.DAL.Repositories
                 .Include(o => o.Dish)
                 .Include(o => o.Order)
                     .ThenInclude(o => o.Table)
+                .Include(o=>o.Order)
+                    .ThenInclude(o=>o.Waiter)
                 .AsNoTracking().ToListAsync();
         }
 

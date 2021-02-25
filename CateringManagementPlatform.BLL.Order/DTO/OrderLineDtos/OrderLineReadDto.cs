@@ -8,5 +8,6 @@
         public string NameDish { get; set; }
         public decimal PriceDish { get; set; }
         public int NumberTable { get; set; }
+        public string FullNameWaiter { get; set; }
     }
 }

@@ -37,6 +37,8 @@ namespace CateringManagementPlatform.DAL.Repositories
                 .Include(o => o.StatusOrder)
                 .Include(o => o.Table)
                 .Include(o => o.Guest)
+                .Include(o => o.PaymentType)
+                .Include(o => o.Waiter)
                 .AsNoTracking().ToListAsync();
         }
 
@@ -50,6 +52,8 @@ namespace CateringManagementPlatform.DAL.Repositories
                 .Include(o => o.StatusOrder)
                 .Include(o => o.Table)
                 .Include(o => o.Guest)
+                .Include(o => o.PaymentType)
+                .Include(o => o.Waiter)
                 .AsNoTracking().FirstOrDefaultAsync(o => o.Id == id);
         }
 

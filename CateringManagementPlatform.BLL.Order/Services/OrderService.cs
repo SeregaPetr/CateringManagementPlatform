@@ -35,14 +35,14 @@ namespace CateringManagementPlatform.BLL.Order.Services
             return orderReadDto;
         }
 
-        public async Task<OrderReadDto> CreateAsync(OrderCreateDto orderCreateDto)
+        public async Task<OrderReadDto> CreateAsync(OrderCreateDto orderCreateDto, int numberTable)
         {
             if (orderCreateDto == null)
             {
                 throw new ValidationException("Введите данные", "");
             }
 
-            var orderTemp = await CreateOrderAsync(orderCreateDto);
+            var orderTemp = await CreateOrderAsync(orderCreateDto, numberTable);
 
             await CreateOrderLinesAsync(orderCreateDto.OrderLines, orderTemp.Id);
 
@@ -58,10 +58,20 @@ namespace CateringManagementPlatform.BLL.Order.Services
             await CreateOrderLinesAsync(orderUpdateDto.OrderLines, orderUpdateDto.Id);
         }
 
-        private async Task<DAL.Entities.Order> CreateOrderAsync(OrderCreateDto orderCreateDto)
+        private async Task<DAL.Entities.Order> CreateOrderAsync(OrderCreateDto orderCreateDto, int numberTable)
         {
             var tables = await _repository.Tables.GetAllAsync();
-            var table = tables.First(t => t.NumberTable == orderCreateDto.NumberTable);
+
+            var table = tables.FirstOrDefault(t => t.NumberTable == numberTable && t.IsArchive == false && t.IsReservation == false);
+
+            if (table == null)
+            {
+                throw new ValidationException("Стол не найден", "");
+            }
+
+            table.IsReservation = true;
+            table.NumberGuests = orderCreateDto.NumberGuests;
+            _repository.Tables.Update(table);
 
             var orderTemp = new DAL.Entities.Order()
             {
@@ -71,12 +81,8 @@ namespace CateringManagementPlatform.BLL.Order.Services
                 GuestId = orderCreateDto.GuestId.Value,
                 WaiterId = orderCreateDto.WaiterId.Value
             };
+
             _repository.Orders.Create(orderTemp);
-
-            table.IsReservation = true;
-            table.NumberGuests = orderCreateDto.NumberGuests;
-            _repository.Tables.Update(table);
-
             await _repository.SaveAsync();
 
             return orderTemp;

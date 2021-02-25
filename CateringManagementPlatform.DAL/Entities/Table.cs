@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Entities
 {
-    //[Index("NumberTable", IsUnique = true)]
     public class Table
     {
         [Key]
@@ -18,7 +17,7 @@ namespace CateringManagementPlatform.DAL.Entities
         public bool IsReservation { get; set; }
 
         [Required]
-        public bool IsActive { get; set; }
+        public bool IsArchive { get; set; }
 
         [Required]
         public int CapacityTable { get; set; }

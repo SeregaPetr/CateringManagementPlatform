@@ -13,7 +13,8 @@ namespace CateringManagementPlatform.BLL.Platform.Profiles
                 .ForMember("NameDish", opt => opt.MapFrom(o => o.Dish.NameDish))
                 .ForMember("PriceDish", opt => opt.MapFrom(o => o.Dish.Price))
                 .ForMember("CountPortions", opt => opt.MapFrom(o => o.CountPortions))
-                .ForMember("NumberTable", opt => opt.MapFrom(o => o.Order.Table.NumberTable));
+                .ForMember("NumberTable", opt => opt.MapFrom(o => o.Order.Table.NumberTable))
+                .ForMember("FullNameWaiter", opt => opt.MapFrom(o => $"{ o.Order.Waiter.FirstName} {o.Order.Waiter.LastName}"));
         }
     }
 }

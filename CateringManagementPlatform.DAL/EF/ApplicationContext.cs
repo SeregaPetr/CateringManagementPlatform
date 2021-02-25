@@ -53,9 +53,10 @@ namespace CateringManagementPlatform.DAL.EF
                     new Account { Id = 1, Email = "admin@mail.com", Password = "admin" },
                     new Account { Id = 2, Email = "barman@mail.com", Password = "barman" },
                     new Account { Id = 3, Email = "chef@mail.com", Password = "chef" },
-                    new Account { Id = 4, Email = "waiter@mail.com", Password = "waiter" },
-                    new Account { Id = 5, Email = "user1@mail.com", Password = "user1" },
-                    new Account { Id = 6, Email = "user2@mail.com", Password = "user2" }
+                    new Account { Id = 4, Email = "waiter1@mail.com", Password = "waiter1" },
+                    new Account { Id = 5, Email = "waiter2@mail.com", Password = "waiter2" },
+                    new Account { Id = 6, Email = "table1@mail.com", Password = "table1" },
+                    new Account { Id = 7, Email = "table2@mail.com", Password = "table2" }
                 );
 
             modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
@@ -64,8 +65,9 @@ namespace CateringManagementPlatform.DAL.EF
                    new { AccountsId = 2, UserRolesId = 2 },
                    new { AccountsId = 3, UserRolesId = 3 },
                    new { AccountsId = 4, UserRolesId = 4 },
-                   new { AccountsId = 5, UserRolesId = 5 },
-                   new { AccountsId = 6, UserRolesId = 5 }
+                   new { AccountsId = 5, UserRolesId = 4 },
+                   new { AccountsId = 6, UserRolesId = 5 },
+                   new { AccountsId = 7, UserRolesId = 5 }
                 ));
 
             modelBuilder.Entity<Manager>().HasData(
@@ -81,12 +83,15 @@ namespace CateringManagementPlatform.DAL.EF
                 );
 
             modelBuilder.Entity<Waiter>().HasData(
-                    new Waiter { Id = 4, FirstName = "Настя", LastName = "Дудка", DepartmentId = (int)DepartmentName.Waiters, AccountId = 4 }
+                    new Waiter { Id = 4, FirstName = "Настя", LastName = "Дудка", DepartmentId = (int)DepartmentName.Waiters, AccountId = 4, NumberTablesServed = 0 }
                 );
+            modelBuilder.Entity<Waiter>().HasData(
+                   new Waiter { Id = 5, FirstName = "Ольга", LastName = "Коробочка", DepartmentId = (int)DepartmentName.Waiters, AccountId = 5, NumberTablesServed = 0 }
+               );
 
             modelBuilder.Entity<Guest>().HasData(
-                    new Guest { Id = 5, FirstName = "Стас", LastName = "Купыр", Phone = "0995553311", AccountId = 5 },
-                    new Guest { Id = 6, FirstName = "Дима", LastName = "Жук", Phone = "0995553346", AccountId = 6 }
+                    new Guest { Id = 6, FirstName = "Стас", LastName = "Купыр", Phone = "0995553311", AccountId = 6 },
+                    new Guest { Id = 7, FirstName = "Дима", LastName = "Жук", Phone = "0995553346", AccountId = 7 }
                 );
 
             modelBuilder.Entity<Department>().HasData(
@@ -180,7 +185,8 @@ namespace CateringManagementPlatform.DAL.EF
                     ));
 
             modelBuilder.Entity<Table>().HasData(
-                 new Table { Id = 1, NumberTable = 5, IsReservation = false, CapacityTable = 10, NumberGuests = null, IsActive = false }
+                 new Table { Id = 10, NumberTable = 1, IsReservation = false, CapacityTable = 10, NumberGuests = null, IsArchive = false },
+                 new Table { Id = 20, NumberTable = 2, IsReservation = false, CapacityTable = 4, NumberGuests = null, IsArchive = false }
                  );
 
             modelBuilder.Entity<PaymentType>().HasData(

@@ -153,7 +153,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
         {
             IEnumerable<OrderReadDto> unpaidOrders = await GetUnpaidOrderAsync();
             await _hubContext.Clients.All.SendAsync("sentOrdersForWaiter", unpaidOrders);
-           // await _hubContext.Clients.Client(connectionId).SendAsync("sentOrdersForWaiter", unpaidOrders);
         }
 
         private async Task<IEnumerable<OrderReadDto>> GetUnpaidOrderAsync()
@@ -202,9 +201,10 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             if (orderGuest is null)
             {
                 orderCreateDto.GuestId = userId;
-                orderCreateDto.WaiterId = ChoiceWaiterAsync();
+                orderCreateDto.WaiterId = await ChoiceWaiterAsync();
 
-                await _orderService.CreateAsync(orderCreateDto);
+                int numberTable = await TableNumberToOrder(accountId);
+                await _orderService.CreateAsync(orderCreateDto, numberTable);
             }
             else
             {
@@ -214,7 +214,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
                     PaymentTypeId = orderGuest.PaymentTypeId,
                     StatusOrderId = orderGuest.StatusOrderId,
                     OrderLines = orderCreateDto.OrderLines,
-
                 };
                 await _orderService.UpdateAsync(orderUpdateDto);
             }
@@ -223,6 +222,17 @@ namespace CateringManagementPlatform.BLL.Platform.Services
 
             await SendFromClienToDepartmentAsync(departmentsId);
             await SendOrdersForWaiterAsync();
+        }
+
+        private async Task<int> TableNumberToOrder(int accountId)
+        {
+            var account = await _repository.Accounts.GetByIdAsync(accountId);
+            string email = account.Email;
+
+            var arr = email.Split('@');
+            int numberTable = int.Parse(arr[0].Substring(5));
+
+            return numberTable;
         }
 
         public async Task PaymentAsync(OrderUpdateDto orderUpdateDto, int accountId)
@@ -280,9 +290,23 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             return orderGuest?.OrderLines.Select(o => o.Dish.DepartmentId).Distinct();
         }
 
-        private int? ChoiceWaiterAsync() //TODO продумать установку официанта
+        private async Task<int?> ChoiceWaiterAsync()
         {
-            return 4;
+            var waiters = await _repository.Waiters.GetAllAsync();
+            var maxNumberTablesServed = waiters.Max(w => w.NumberTablesServed);
+
+            var waiter = waiters.FirstOrDefault(w => w.NumberTablesServed < maxNumberTablesServed);
+
+            if (waiter is null)
+            {
+                waiter = waiters.First();
+            }
+            waiter.NumberTablesServed++;
+
+            _repository.Waiters.Update(waiter);
+            await _repository.SaveAsync();
+
+            return waiter.Id;
         }
 
         private async Task<int> GetUserIdAsync(int accountId)

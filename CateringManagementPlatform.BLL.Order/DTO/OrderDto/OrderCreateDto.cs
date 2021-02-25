@@ -6,8 +6,8 @@ namespace CateringManagementPlatform.BLL.Order.DTO.OrderDto
 {
     public class OrderCreateDto
     {
-        [Required]
-        public int NumberTable { get; set; }
+      //  [Required]
+      //  public int NumberTable { get; set; }
 
         [Required]
         public int NumberGuests { get; set; }

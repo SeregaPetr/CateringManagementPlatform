@@ -18,7 +18,7 @@ namespace CateringManagementPlatform.DAL.Entities
     {
         NewOrder = 1,   //новый заказ     ->bar, Kitchen, user
         WorkOrder,      //заказ в работе  ->bar ||(&&) Kitchen, user
-        OrderIsReady,   //заказ готов     ->waiters, bar || Kitchen user
+        OrderIsReady,   //заказ готов     ->waiters, bar || Kitchen, user
         Ordering,       //подача заказа   ->waiters, user
         OrderFiled,     //заказ подан     ->waiters, user
     }

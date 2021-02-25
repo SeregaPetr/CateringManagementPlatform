@@ -41,7 +41,7 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
         private async Task TestForTableExistence(int numberTable)
         {
             var tables = await _repository.Tables.GetAllAsync();
-            var tableExists = tables.Any(t => t.NumberTable == numberTable && t.IsActive == false);
+            var tableExists = tables.Any(t => t.NumberTable == numberTable && t.IsArchive == false);
 
             if (tableExists)
             {
@@ -52,11 +52,11 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
         public async Task DeleteAsync(int id)
         {
             var table = await _repository.Tables.GetByIdAsync(id);
-            if (table == null || table.IsActive == true)
+            if (table == null || table.IsArchive == true)
             {
                 throw new ValidationException("Стол не найден", "");
             }
-            table.IsActive = true;
+            table.IsArchive = true;
             _repository.Tables.Update(table);
             await _repository.SaveAsync();
         }
@@ -64,14 +64,14 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
         public async Task<IEnumerable<TableReadDto>> GetAllAsync()
         {
             var allTables = await _repository.Tables.GetAllAsync();
-            var tables = allTables.Where(t => t.IsActive == false);
+            var tables = allTables.Where(t => t.IsArchive == false);
             return _mapper.Map<IEnumerable<TableReadDto>>(tables);
         }
 
         public async Task<TableReadDto> GetByIdAsync(int id)
         {
             var table = await _repository.Tables.GetByIdAsync(id);
-            if (table == null || table.IsActive == true)
+            if (table == null || table.IsArchive == true)
             {
                 throw new ValidationException("Стол не найден", "");
             }
@@ -81,7 +81,7 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
         public async Task UpdateAsync(TableUpdateDto tableUpdateDto)
         {
             var table = await _repository.Tables.GetByIdAsync(tableUpdateDto.Id);
-            if (table == null || table.IsActive == true)
+            if (table == null || table.IsArchive == true)
             {
                 throw new ValidationException("Стол не найден", "");
             }
