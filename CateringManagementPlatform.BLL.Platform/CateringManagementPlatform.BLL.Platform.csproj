@@ -14,8 +14,4 @@
     <ProjectReference Include="..\CateringManagementPlatform.DAL\CateringManagementPlatform.DAL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\" />
-  </ItemGroup>
-
 </Project>

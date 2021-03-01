@@ -2,6 +2,6 @@
 {
     public class GuestReadDto : PersonDto
     {
-        public string Phone { get; set; }
+        public int Id { get; set; }
     }
 }

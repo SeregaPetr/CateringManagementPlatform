@@ -6,6 +6,7 @@ using AutoMapper;
 using CateringManagementPlatform.BLL.Order.DTO.OrderDto;
 using CateringManagementPlatform.BLL.Order.DTO.OrderLineDtos;
 using CateringManagementPlatform.BLL.Order.Interfaces;
+using CateringManagementPlatform.BLL.Platform.DTO.TableInfoDtos;
 using CateringManagementPlatform.BLL.Platform.HubConfig;
 using CateringManagementPlatform.BLL.Platform.Interfaces;
 using CateringManagementPlatform.DAL.Entities;
@@ -46,6 +47,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
 
         private async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForDepartmentAsync(DepartmentName departmentName)
         {
+            //cancelled
             var orderLines = await _repository.OrderLines.GetAllAsync();
             IEnumerable<OrderLine> orderLinesForDepartment = new List<OrderLine>();
 
@@ -72,6 +74,13 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             return await GetUnpaidOrderAsync();
         }
 
+        public async Task<IEnumerable<TableInfoReadDto>> GetAllTablesInfoAsync()
+        {
+            var allTables = await _repository.Tables.GetAllAsync();
+            var tables = allTables.Where(t => t.IsArchive == false);
+            return _mapper.Map<IEnumerable<TableInfoReadDto>>(tables);
+        }
+
         public async Task<OrderReadDto> GetOrderForGuestAsync(int accountId)
         {
             int userId = await GetUserIdAsync(accountId);
@@ -81,6 +90,38 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             OrderReadDto orderReadDto = _mapper.Map<OrderReadDto>(orderForUser);
 
             return orderReadDto ?? new OrderReadDto();
+        }
+
+        public async Task FreeTable(int tableId)
+        {
+            var table = await _repository.Tables.GetByIdAsync(tableId);
+
+            table.IsReservation = false;
+            table.NumberGuests = null;
+            table.Account.Password = PasswordUpdate(6);
+
+            _repository.Tables.Update(table);
+            await _repository.SaveAsync();
+
+            await SendToClienLogoutAsync(tableId);
+            await SendToAdminTablesAsync();
+        }
+
+        private string PasswordUpdate(int length)
+        {
+            try
+            {
+                byte[] result = new byte[length];
+                for (int index = 0; index < length; index++)
+                {
+                    result[index] = (byte)new Random().Next(33, 126);
+                }
+                return System.Text.Encoding.ASCII.GetString(result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
         }
 
         public async Task UpdateOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto)
@@ -109,6 +150,76 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             }
         }
 
+        public async Task ConfirOrderAsync(OrderCreateDto orderCreateDto, int accountId)
+        {
+            int userId = await GetUserIdAsync(accountId);
+            var orderGuest = await OrderForGuestAsync(userId);
+
+            if (orderGuest is null)
+            {
+                orderCreateDto.GuestId = userId;
+                orderCreateDto.WaiterId = await ChoiceWaiterAsync();
+
+                int numberTable = await TableNumberToOrder(accountId);
+                await _orderService.CreateAsync(orderCreateDto, numberTable);
+            }
+            else
+            {
+                OrderUpdateDto orderUpdateDto = new OrderUpdateDto
+                {
+                    Id = orderGuest.Id,
+                    PaymentTypeId = orderGuest.PaymentTypeId,
+                    StatusOrderId = orderGuest.StatusOrderId,
+                    OrderLines = orderCreateDto.OrderLines,
+                };
+                await _orderService.UpdateAsync(orderUpdateDto);
+            }
+
+            var departmentsId = await DepartmentsIdToSendDataAsync(userId);
+
+            await SendFromClienToDepartmentAsync(departmentsId);
+            await SendOrdersForWaiterAsync();
+            await SendToAdminTablesAsync();
+        }
+
+        public async Task PaymentAsync(OrderUpdateDto orderUpdateDto, int accountId)
+        {
+            int userId = await GetUserIdAsync(accountId);
+            var orderGuest = await OrderForGuestAsync(userId);
+
+            if (orderGuest != null)
+            {
+                OrderUpdateDto orderUpdate = new OrderUpdateDto
+                {
+                    Id = orderGuest.Id,
+                    PaymentTypeId = orderUpdateDto.PaymentTypeId,
+                    StatusOrderId = (int)NameStatusOrder.Payment,
+                    OrderLines = orderUpdateDto.OrderLines
+                };
+                await _orderService.UpdateAsync(orderUpdate);
+
+                await SendToClienAsync(orderGuest.Id);
+                await SendOrdersForWaiterAsync();
+            }
+        }
+
+        public async Task ConfirmPaymentAsync(int orderId)
+        {
+            var order = await _repository.Orders.GetByIdAsync(orderId);
+
+            OrderUpdateDto orderUpdate = new OrderUpdateDto
+            {
+                Id = order.Id,
+                PaymentTypeId = order.PaymentTypeId,
+                StatusOrderId = (int)NameStatusOrder.Closed,
+                CheckClosingTime = DateTime.Now
+            };
+            await _orderService.UpdateAsync(orderUpdate);
+
+            await SendToClienAsync(orderId);
+            await SendOrdersForWaiterAsync();
+        }
+
         private async Task SendFromClienToDepartmentAsync(IEnumerable<int> departmentsId)
         {
             foreach (var dpartmentId in departmentsId)
@@ -123,6 +234,26 @@ namespace CateringManagementPlatform.BLL.Platform.Services
                     await SendToKitchenAsync();
                 }
             }
+        }
+
+        private async Task SendToClienLogoutAsync(int tableId)
+        {
+            int accountId = await GetAccountIdForTableId(tableId);
+
+            await _hubContext.Clients.All.SendAsync("sentToClienLogout", accountId.ToString());
+        }
+
+        private async Task<int> GetAccountIdForTableId(int tableId)
+        {
+            var table = await _repository.Tables.GetByIdAsync(tableId);
+            var accountId = table.Account.Id;
+            return accountId;
+        }
+
+        private async Task SendToAdminTablesAsync()
+        {
+            var tablesInfo = await GetAllTablesInfoAsync();
+            await _hubContext.Clients.All.SendAsync("sentToAdminTables", tablesInfo);
         }
 
         private async Task SendToBarAsync()
@@ -193,37 +324,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             return orderLine;
         }
 
-        public async Task ConfirOrderAsync(OrderCreateDto orderCreateDto, int accountId)
-        {
-            int userId = await GetUserIdAsync(accountId);
-            var orderGuest = await OrderForGuestAsync(userId);
-
-            if (orderGuest is null)
-            {
-                orderCreateDto.GuestId = userId;
-                orderCreateDto.WaiterId = await ChoiceWaiterAsync();
-
-                int numberTable = await TableNumberToOrder(accountId);
-                await _orderService.CreateAsync(orderCreateDto, numberTable);
-            }
-            else
-            {
-                OrderUpdateDto orderUpdateDto = new OrderUpdateDto
-                {
-                    Id = orderGuest.Id,
-                    PaymentTypeId = orderGuest.PaymentTypeId,
-                    StatusOrderId = orderGuest.StatusOrderId,
-                    OrderLines = orderCreateDto.OrderLines,
-                };
-                await _orderService.UpdateAsync(orderUpdateDto);
-            }
-
-            var departmentsId = await DepartmentsIdToSendDataAsync(userId);
-
-            await SendFromClienToDepartmentAsync(departmentsId);
-            await SendOrdersForWaiterAsync();
-        }
-
         private async Task<int> TableNumberToOrder(int accountId)
         {
             var account = await _repository.Accounts.GetByIdAsync(accountId);
@@ -233,44 +333,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             int numberTable = int.Parse(arr[0].Substring(5));
 
             return numberTable;
-        }
-
-        public async Task PaymentAsync(OrderUpdateDto orderUpdateDto, int accountId)
-        {
-            int userId = await GetUserIdAsync(accountId);
-            var orderGuest = await OrderForGuestAsync(userId);
-
-            if (orderGuest != null)
-            {
-                OrderUpdateDto orderUpdate = new OrderUpdateDto
-                {
-                    Id = orderGuest.Id,
-                    PaymentTypeId = orderUpdateDto.PaymentTypeId,
-                    StatusOrderId = (int)NameStatusOrder.Payment,
-                    OrderLines = orderUpdateDto.OrderLines
-                };
-                await _orderService.UpdateAsync(orderUpdate);
-
-                await SendToClienAsync(orderGuest.Id);
-                await SendOrdersForWaiterAsync();
-            }
-        }
-
-        public async Task ConfirmPaymentAsync(int orderId)
-        {
-            var order = await _repository.Orders.GetByIdAsync(orderId);
-
-            OrderUpdateDto orderUpdate = new OrderUpdateDto
-            {
-                Id = order.Id,
-                PaymentTypeId = order.PaymentTypeId,
-                StatusOrderId = (int)NameStatusOrder.Closed,
-                CheckClosingTime = DateTime.Now
-            };
-            await _orderService.UpdateAsync(orderUpdate);
-
-            await SendToClienAsync(orderId);
-            await SendOrdersForWaiterAsync();
         }
 
         private async Task<DAL.Entities.Order> OrderForGuestAsync(int userId)
@@ -320,6 +382,5 @@ namespace CateringManagementPlatform.BLL.Platform.Services
         {
             _repository.Dispose();
         }
-
     }
 }

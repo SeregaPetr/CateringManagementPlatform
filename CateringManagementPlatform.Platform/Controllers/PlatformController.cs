@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CateringManagementPlatform.BLL.Order.DTO.OrderDto;
 using CateringManagementPlatform.BLL.Order.DTO.OrderLineDtos;
+using CateringManagementPlatform.BLL.Platform.DTO.TableInfoDtos;
 using CateringManagementPlatform.BLL.Platform.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,7 @@ namespace CateringManagementPlatform.Platform.Controllers
             return Ok(orderLinesForBar);
         }
 
+        // GET api/platform/unpaid-orders
         [Route("unpaid-orders")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderReadDto>>> UnpaidOrders()
@@ -172,6 +174,42 @@ namespace CateringManagementPlatform.Platform.Controllers
             }
         }
 
+        // GET api/platform/table-info
+        [Route("tables-info")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TableInfoReadDto>>> GetTableInfo()
+        {
+            var tablesInfo = await _dataForDepartmentService.GetAllTablesInfoAsync();
+            return Ok(tablesInfo);
+        }
+
+        // POST api/platform/free-table
+        [Route("free-table")]
+        [HttpPost]
+        public async Task<ActionResult> FreeTable(TableInfoUpdateDto tableInfoUpdateDto)
+        {
+            if (tableInfoUpdateDto == null || tableInfoUpdateDto.TableId <= 0)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                int accountId = GetAccountId();
+                await _dataForDepartmentService.FreeTable(tableInfoUpdateDto.TableId);
+
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
         private int GetAccountId()
         {
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -179,3 +217,4 @@ namespace CateringManagementPlatform.Platform.Controllers
 
     }
 }
+

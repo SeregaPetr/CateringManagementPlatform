@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CateringManagementPlatform.DAL.Entities.People;
 using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagementPlatform.DAL.Entities
@@ -25,5 +26,6 @@ namespace CateringManagementPlatform.DAL.Entities
         public int? NumberGuests { get; set; }
 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public Account Account { get; set; }
     }
 }

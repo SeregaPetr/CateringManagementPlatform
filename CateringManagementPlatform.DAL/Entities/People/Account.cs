@@ -9,6 +9,10 @@ namespace CateringManagementPlatform.DAL.Entities.People
         public string Password { get; set; }
 
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+
+        public int? TableId { get; set; }
+        public Table Table { get; set; }
+
         public Person Person { get; set; }
     }
 }

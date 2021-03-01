@@ -60,24 +60,13 @@ namespace CateringManagementPlatform.BLL.Order.Services
 
         private async Task<DAL.Entities.Order> CreateOrderAsync(OrderCreateDto orderCreateDto, int numberTable)
         {
-            var tables = await _repository.Tables.GetAllAsync();
-
-            var table = tables.FirstOrDefault(t => t.NumberTable == numberTable && t.IsArchive == false && t.IsReservation == false);
-
-            if (table == null)
-            {
-                throw new ValidationException("Стол не найден", "");
-            }
-
-            table.IsReservation = true;
-            table.NumberGuests = orderCreateDto.NumberGuests;
-            _repository.Tables.Update(table);
+            int tableId = await UpdateTable(orderCreateDto.NumberGuests, numberTable);
 
             var orderTemp = new DAL.Entities.Order()
             {
                 CheckOpeningTime = DateTime.Now,
                 StatusOrderId = (int)NameStatusOrder.Open,
-                TableId = table.Id,
+                TableId = tableId,
                 GuestId = orderCreateDto.GuestId.Value,
                 WaiterId = orderCreateDto.WaiterId.Value
             };
@@ -86,6 +75,23 @@ namespace CateringManagementPlatform.BLL.Order.Services
             await _repository.SaveAsync();
 
             return orderTemp;
+        }
+
+        private async Task<int> UpdateTable(int numberGuests, int numberTable)
+        {
+            var tables = await _repository.Tables.GetAllAsync();
+
+            var table = tables.FirstOrDefault(t => t.NumberTable == numberTable && t.IsArchive == false);
+
+            if (table == null)
+            {
+                throw new ValidationException("Стол не найден", "");
+            }
+
+            table.IsReservation = true;
+            table.NumberGuests = numberGuests;
+            _repository.Tables.Update(table);
+            return table.Id;
         }
 
         private async Task<DAL.Entities.Order> UpdateOrderAsync(OrderUpdateDto orderUpdateDto)
@@ -100,6 +106,9 @@ namespace CateringManagementPlatform.BLL.Order.Services
             order.CheckClosingTime = orderUpdateDto.CheckClosingTime;
             order.StatusOrderId = orderUpdateDto.StatusOrderId;
             order.PaymentTypeId = orderUpdateDto.PaymentTypeId;
+            //TODO обновление данных по столу
+            //изменить OrderUpdateDto 
+            //добавить NumberGuests, IsReservation
 
             _repository.Orders.Update(order);
             await _repository.SaveAsync();
