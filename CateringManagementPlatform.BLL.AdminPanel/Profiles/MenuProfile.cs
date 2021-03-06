@@ -9,6 +9,8 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Profiles
         public MenuProfile()
         {
             CreateMap<Menu, MenuReadDto>();
+            CreateMap<MenuUpdateDto, Menu>();
+            CreateMap<MenuCreateDto, Menu>();
         }
     }
 }

@@ -71,7 +71,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
 
         public async Task<IEnumerable<OrderReadDto>> GetUnpaidOrdersAsync()
         {
-            return await GetUnpaidOrderAsync();
+            return await UnpaidOrdersAsync();
         }
 
         public async Task<IEnumerable<TableInfoReadDto>> GetAllTablesInfoAsync()
@@ -104,7 +104,37 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             await _repository.SaveAsync();
 
             await SendToClienLogoutAsync(tableId);
-            await SendToAdminTablesAsync();
+
+            await CancelOrder(table);
+        }
+
+        private async Task CancelOrder(Table table)
+        {
+            var orders = await _repository.Orders.GetAllAsync();
+            var unpaidOrdersForTable = orders.FirstOrDefault(o => o.Table.Id == table.Id &&
+               (o.StatusOrderId == (int)NameStatusOrder.Open || o.StatusOrderId == (int)NameStatusOrder.Payment));
+
+            if (unpaidOrdersForTable != null)
+            {
+                unpaidOrdersForTable.StatusOrderId = (int)NameStatusOrder.Closed;
+                unpaidOrdersForTable.CheckClosingTime = DateTime.Now;
+                _repository.Orders.Update(unpaidOrdersForTable);
+
+                unpaidOrdersForTable.OrderLines.ToList().ForEach(ol =>
+                {
+                    ol.StatusOrderLineId = (int)NameStatusOrderLine.Cancelled;
+                    _repository.OrderLines.Update(ol);
+                });
+
+                await _repository.SaveAsync();
+
+                int userId = await GetUserIdAsync(table.Account.Id);
+                var departmentsId = await DepartmentsIdToSendDataAsync(userId);
+
+                await SendToDepartmentAsync(departmentsId);
+                await SendToWaiterAsync();
+                await SendToAdminTablesAsync();
+            }
         }
 
         private string PasswordUpdate(int length)
@@ -142,6 +172,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             {
                 await SendToKitchenAsync();
             }
+
             if (orderLine.StatusOrderLineId == (int)NameStatusOrderLine.OrderIsReady ||
                 orderLine.StatusOrderLineId == (int)NameStatusOrderLine.Ordering ||
                 orderLine.StatusOrderLineId == (int)NameStatusOrderLine.OrderFiled)
@@ -177,7 +208,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
 
             var departmentsId = await DepartmentsIdToSendDataAsync(userId);
 
-            await SendFromClienToDepartmentAsync(departmentsId);
+            await SendToDepartmentAsync(departmentsId);
             await SendOrdersForWaiterAsync();
             await SendToAdminTablesAsync();
         }
@@ -211,7 +242,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             {
                 Id = order.Id,
                 PaymentTypeId = order.PaymentTypeId,
-                StatusOrderId = (int)NameStatusOrder.Closed,
+                StatusOrderId = (int)NameStatusOrder.Paid,
                 CheckClosingTime = DateTime.Now
             };
             await _orderService.UpdateAsync(orderUpdate);
@@ -220,7 +251,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
             await SendOrdersForWaiterAsync();
         }
 
-        private async Task SendFromClienToDepartmentAsync(IEnumerable<int> departmentsId)
+        private async Task SendToDepartmentAsync(IEnumerable<int> departmentsId)
         {
             foreach (var dpartmentId in departmentsId)
             {
@@ -282,11 +313,11 @@ namespace CateringManagementPlatform.BLL.Platform.Services
 
         private async Task SendOrdersForWaiterAsync()
         {
-            IEnumerable<OrderReadDto> unpaidOrders = await GetUnpaidOrderAsync();
+            IEnumerable<OrderReadDto> unpaidOrders = await UnpaidOrdersAsync();
             await _hubContext.Clients.All.SendAsync("sentOrdersForWaiter", unpaidOrders);
         }
 
-        private async Task<IEnumerable<OrderReadDto>> GetUnpaidOrderAsync()
+        private async Task<IEnumerable<OrderReadDto>> UnpaidOrdersAsync()
         {
             var orders = await _repository.Orders.GetAllAsync();
 
@@ -346,8 +377,8 @@ namespace CateringManagementPlatform.BLL.Platform.Services
         private async Task<IEnumerable<int>> DepartmentsIdToSendDataAsync(int userId)
         {
             var orders = await _repository.Orders.GetAllAsync();
-            var orderGuest = orders.FirstOrDefault(o => o.GuestId == userId &&
-                 (o.StatusOrderId == (int)NameStatusOrder.Open || o.StatusOrderId == (int)NameStatusOrder.Payment));
+            var orderGuest = orders.FirstOrDefault(o => o.GuestId == userId && (o.StatusOrderId == (int)NameStatusOrder.Open
+                || o.StatusOrderId == (int)NameStatusOrder.Payment || o.StatusOrderId == (int)NameStatusOrder.Closed));
 
             return orderGuest?.OrderLines.Select(o => o.Dish.DepartmentId).Distinct();
         }

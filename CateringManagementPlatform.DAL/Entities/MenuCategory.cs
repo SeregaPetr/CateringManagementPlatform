@@ -11,8 +11,8 @@ namespace CateringManagementPlatform.DAL.Entities
         [Required]
         public string NameCategory { get; set; }
 
-        public ICollection<Menu> Menus { get; set; } = new List<Menu>();
-        public ICollection<MenuCategoryMenu> MenuCategoryMenus { get; set; } = new List<MenuCategoryMenu>();
+        public  ICollection<Menu> Menus { get; set; } = new List<Menu>();
+        public  List<MenuCategoryMenu> MenuCategoryMenus { get; set; } = new List<MenuCategoryMenu>();
     }
 }
 

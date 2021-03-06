@@ -4,6 +4,8 @@ namespace CateringManagementPlatform.DAL.Entities
 {
     public class MenuCategoryMenu
     {
+       // public int Id { get; set; }
+
         public int MenuId { get; set; }
         public Menu Menu { get; set; }
 

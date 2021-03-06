@@ -13,6 +13,7 @@ namespace CateringManagementPlatform.API.ServiceExtensions
             services.AddScoped<IDishService, DishService>();
             services.AddScoped<IGuestService, GuestService>();
             services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IMenuCategoryService, MenuCategoryService>();
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IWaiterService, WaiterService>();
             services.AddScoped<IPaymentTypeService, PaymentTypeService>();

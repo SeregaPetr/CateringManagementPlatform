@@ -14,7 +14,6 @@ namespace CateringManagementPlatform.DAL.Repositories
 
         private BarmanRepository _barmenRepository;
         private ChefRepository _chefRepository;
-        //  private ManagerRepository _managerRepository;
         private WaiterRepository _waiterRepository;
         private AccountRepository _accountRepository;
         private GuestRepository _guestRepository;
@@ -26,7 +25,6 @@ namespace CateringManagementPlatform.DAL.Repositories
         private OrderRepository _orderRepository;
         private OrderLineRepository _orderLineRepository;
         private PaymentTypeRepository _paymentTypeRepository;
-        //  private StatusRepository _statusRepository;
         private TableRepository _tableRepository;
 
         public EFUnitOfWork(ApplicationContext context)
@@ -142,18 +140,6 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
-        //public IRepository<Manager> Managers
-        //{
-        //    get
-        //    {
-        //        if (_managerRepository == null)
-        //        {
-        //            _managerRepository = new ManagerRepository(_context);
-        //        }
-        //        return _managerRepository;
-        //    }
-        //}
-
         public IRepository<MenuCategory> MenuCategories
         {
             get
@@ -190,7 +176,6 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
-
         public IRepository<PaymentType> PaymentTypes
         {
             get
@@ -203,18 +188,6 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
-        //public IRepository<StatusOrder> Statuses
-        //{
-        //    get
-        //    {
-        //        if (_statusRepository == null)
-        //        {
-        //            _statusRepository = new StatusRepository(_context);
-        //        }
-        //        return _statusRepository;
-        //    }
-        //}
-
         public IRepository<Table> Tables
         {
             get
@@ -226,7 +199,6 @@ namespace CateringManagementPlatform.DAL.Repositories
                 return _tableRepository;
             }
         }
-
 
         //public void Commit()
         //{

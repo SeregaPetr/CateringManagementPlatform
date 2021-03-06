@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
@@ -24,7 +25,24 @@ namespace CateringManagementPlatform.DAL.Repositories
 
         public void Delete(Dish dish)
         {
-            _context.Dishes.Remove(dish);
+            var dishDB = _context.Dishes.Include(x => x.MenuCategoryMenus).First(x => x.Id == dish.Id);
+
+            var menuCategoryMenusForRemove = new List<MenuCategoryMenu>();
+
+            foreach (var menuCategoryMenu in dishDB.MenuCategoryMenus)
+            {
+                var menuCategoryMenuDB = _context.MenuCategoryMenus.FirstOrDefault(x =>
+                   x.MenuId == menuCategoryMenu.MenuId && x.MenuCategoryId == menuCategoryMenu.MenuCategoryId);
+
+                menuCategoryMenusForRemove.Add(menuCategoryMenuDB);
+            }
+
+            foreach (var menuCategoryMenuForRemove in menuCategoryMenusForRemove)
+            {
+                dishDB.MenuCategoryMenus.Remove(menuCategoryMenuForRemove);
+            }
+
+            dishDB.IsArchive = true;
         }
 
         public async Task<IEnumerable<Dish>> GetAllAsync()

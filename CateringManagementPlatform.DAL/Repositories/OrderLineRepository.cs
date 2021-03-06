@@ -34,23 +34,26 @@ namespace CateringManagementPlatform.DAL.Repositories
                 .Include(o => o.Dish)
                 .Include(o => o.Order)
                     .ThenInclude(o => o.Table)
-                .Include(o=>o.Order)
-                    .ThenInclude(o=>o.Waiter)
+                .Include(o => o.Order)
+                    .ThenInclude(o => o.Waiter)
                 .AsNoTracking().ToListAsync();
         }
 
         public async Task<OrderLine> GetByIdAsync(int id)
         {
             return await _context.OrderLines
-                .Include(o => o.StatusOrderLine)
-                .Include(o => o.Dish)
-                .Include(o => o.Order)
-                    .ThenInclude(o => o.Table)
-                .AsNoTracking().FirstOrDefaultAsync(o => o.Id == id);
+               .Include(o => o.StatusOrderLine)
+               .Include(o => o.Dish)
+               .Include(o => o.Order)
+                   .ThenInclude(o => o.Table)
+               .Include(o => o.Order)
+                   .ThenInclude(o => o.Waiter)
+               .AsNoTracking().FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public void Update(OrderLine orderLine)
         {
+            _context.Entry(orderLine).State = EntityState.Modified;
             _context.OrderLines.Update(orderLine);
         }
     }

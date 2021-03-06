@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using CateringManagementPlatform.BLL.AdminPanel.DTO.DishDtos;
 
 namespace CateringManagementPlatform.BLL.AdminPanel.DTO.MenuCategoryDtos
 {
@@ -8,5 +10,8 @@ namespace CateringManagementPlatform.BLL.AdminPanel.DTO.MenuCategoryDtos
 
         [Required]
         public string NameCategory { get; set; }
+
+        public IEnumerable<DishUpdateDto> Dishes { get; set; } = new List<DishUpdateDto>();
+
     }
 }

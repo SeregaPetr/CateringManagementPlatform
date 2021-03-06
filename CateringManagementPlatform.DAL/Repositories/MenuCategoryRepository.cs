@@ -30,14 +30,12 @@ namespace CateringManagementPlatform.DAL.Repositories
         public async Task<IEnumerable<MenuCategory>> GetAllAsync()
         {
             return await _context.MenuCategories
-                //.Include(m => m.MenuCategoryMenus)
                 .AsNoTracking().ToListAsync();
         }
 
         public async Task<MenuCategory> GetByIdAsync(int id)
         {
             return await _context.MenuCategories
-                //.Include(m => m.MenuCategoryMenus)
                 .AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
         }
 

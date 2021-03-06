@@ -12,6 +12,7 @@ using MyValidationException;
 
 namespace CateringManagementPlatform.Platform.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PlatformController : ControllerBase
@@ -60,7 +61,6 @@ namespace CateringManagementPlatform.Platform.Controllers
         }
 
         // GET api/platform/order-for-guest
-        [Authorize]
         [Route("order-for-guest")]
         [HttpGet]
         public async Task<ActionResult<OrderReadDto>> OrdeForGuest()

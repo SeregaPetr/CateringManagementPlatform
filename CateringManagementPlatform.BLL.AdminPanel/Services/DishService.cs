@@ -49,7 +49,7 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             var dish = await _repository.Dishes.GetByIdAsync(id);
             if (dish == null)
             {
-                throw new ValidationException("Блюдо не найден", "");
+                throw new ValidationException("Блюдо не найдено", "");
             }
             return _mapper.Map<DishReadDto>(dish);
         }
@@ -59,7 +59,7 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             var dish = await _repository.Dishes.GetByIdAsync(dishUpdateDto.Id);
             if (dish == null)
             {
-                throw new ValidationException("Блюдо не найден", "");
+                throw new ValidationException("Блюдо не найдено", "");
             }
 
             if (!dish.NameDish.Equals(dishUpdateDto.NameDish))
@@ -88,10 +88,9 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             var dish = await _repository.Dishes.GetByIdAsync(id);
             if (dish == null || dish.IsArchive == true)
             {
-                throw new ValidationException("Стол не найден", "");
+                throw new ValidationException("Бдюдо не найдено", "");
             }
-            dish.IsArchive = true;
-            _repository.Dishes.Update(dish);
+            _repository.Dishes.Delete(dish);
             await _repository.SaveAsync();
         }
 

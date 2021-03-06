@@ -26,6 +26,7 @@ namespace CateringManagementPlatform.DAL.EF
         public DbSet<Dish> Dishes { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<MenuCategory> MenuCategories { get; set; }
+        public DbSet<MenuCategoryMenu> MenuCategoryMenus { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }
         public DbSet<PaymentType> PaymentTypes { get; set; }
@@ -108,15 +109,18 @@ namespace CateringManagementPlatform.DAL.EF
             modelBuilder.Entity<StatusOrder>().HasData(
                     new StatusOrder { Id = 1, NameStatus = "Счет открыт" },
                     new StatusOrder { Id = 2, NameStatus = "Оплата" },
-                    new StatusOrder { Id = 3, NameStatus = "Счет закрыт" }
+                    new StatusOrder { Id = 3, NameStatus = "Счет оплачен" },
+                    new StatusOrder { Id = 4, NameStatus = "Счет закрыт" },
+                    new StatusOrder { Id = 5, NameStatus = "Заказ отменен" }
                 );
 
             modelBuilder.Entity<StatusOrderLine>().HasData(
-                    new StatusOrderLine { Id = 1, NameStatus = "новый заказ" },
-                    new StatusOrderLine { Id = 2, NameStatus = "заказ в работе" },
-                    new StatusOrderLine { Id = 3, NameStatus = "заказ готов" },
-                    new StatusOrderLine { Id = 4, NameStatus = "подача заказа" },
-                    new StatusOrderLine { Id = 5, NameStatus = "заказ подан" }
+                    new StatusOrderLine { Id = 1, NameStatus = "Новый заказ" },
+                    new StatusOrderLine { Id = 2, NameStatus = "Заказ в работе" },
+                    new StatusOrderLine { Id = 3, NameStatus = "Заказ готов" },
+                    new StatusOrderLine { Id = 4, NameStatus = "Подача заказа" },
+                    new StatusOrderLine { Id = 5, NameStatus = "Заказ подан" },
+                    new StatusOrderLine { Id = 6, NameStatus = "Заказ отменен" }
                 );
 
             Dish shashlik = new Dish { Id = 1, NameDish = "Шашлык", CompositionDish = "Мясо", Weight = 150, Price = 150, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen };
@@ -152,6 +156,7 @@ namespace CateringManagementPlatform.DAL.EF
                        .HasForeignKey(pt => pt.MenuId),
                    j =>
                    {
+                       j.HasKey(t => new { t.MenuCategoryId,t.MenuId });
                        j.ToTable("MenuCategoryMenus");
                    }
                );

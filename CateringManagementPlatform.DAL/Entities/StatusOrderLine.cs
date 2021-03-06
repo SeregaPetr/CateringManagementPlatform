@@ -21,6 +21,6 @@ namespace CateringManagementPlatform.DAL.Entities
         OrderIsReady,   //заказ готов     ->waiters, bar || Kitchen, user
         Ordering,       //подача заказа   ->waiters, user
         OrderFiled,     //заказ подан     ->waiters, user
-        //Cancelled
+        Cancelled       //отмененный заказ
     }
 }

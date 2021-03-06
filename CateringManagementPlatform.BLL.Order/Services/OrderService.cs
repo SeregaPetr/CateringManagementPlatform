@@ -108,7 +108,7 @@ namespace CateringManagementPlatform.BLL.Order.Services
             order.PaymentTypeId = orderUpdateDto.PaymentTypeId;
             //TODO обновление данных по столу
             //изменить OrderUpdateDto 
-            //добавить NumberGuests, IsReservation
+            //добавить NumberGuests, //IsReservation??
 
             _repository.Orders.Update(order);
             await _repository.SaveAsync();

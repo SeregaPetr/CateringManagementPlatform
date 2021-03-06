@@ -30,9 +30,9 @@ namespace CateringManagementPlatform.DAL.Repositories
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
             return await _context.Orders
-               .Include(o => o.OrderLines)
+                .Include(o => o.OrderLines)
                     .ThenInclude(ol => ol.Dish)
-                 .Include(o => o.OrderLines)
+                .Include(o => o.OrderLines)
                     .ThenInclude(ol => ol.StatusOrderLine)
                 .Include(o => o.StatusOrder)
                 .Include(o => o.Table)
