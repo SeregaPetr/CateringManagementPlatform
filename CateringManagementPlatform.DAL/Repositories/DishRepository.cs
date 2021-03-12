@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using CateringManagementPlatform.DAL.EF;
 using CateringManagementPlatform.DAL.Entities;
@@ -25,30 +24,14 @@ namespace CateringManagementPlatform.DAL.Repositories
 
         public void Delete(Dish dish)
         {
-            var dishDB = _context.Dishes.Include(x => x.MenuCategoryMenus).First(x => x.Id == dish.Id);
-
-            var menuCategoryMenusForRemove = new List<MenuCategoryMenu>();
-
-            foreach (var menuCategoryMenu in dishDB.MenuCategoryMenus)
-            {
-                var menuCategoryMenuDB = _context.MenuCategoryMenus.FirstOrDefault(x =>
-                   x.MenuId == menuCategoryMenu.MenuId && x.MenuCategoryId == menuCategoryMenu.MenuCategoryId);
-
-                menuCategoryMenusForRemove.Add(menuCategoryMenuDB);
-            }
-
-            foreach (var menuCategoryMenuForRemove in menuCategoryMenusForRemove)
-            {
-                dishDB.MenuCategoryMenus.Remove(menuCategoryMenuForRemove);
-            }
-
-            dishDB.IsArchive = true;
+            _context.Dishes.Remove(dish);
         }
 
         public async Task<IEnumerable<Dish>> GetAllAsync()
         {
             return await _context.Dishes
                 .Include(d => d.Department)
+                .Include(d => d.MenuCategoryMenus)
                 .AsNoTracking().ToListAsync();
         }
 
@@ -56,7 +39,8 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             return await _context.Dishes
                 .Include(d => d.Department)
-                .AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+                .Include(d => d.MenuCategoryMenus)
+                .FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public void Update(Dish dish)

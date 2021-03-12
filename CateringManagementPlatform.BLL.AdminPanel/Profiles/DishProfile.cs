@@ -12,7 +12,6 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Profiles
             CreateMap<Dish, DishReadDto>()
                 .ForMember("Department", opt => opt.MapFrom(d =>
                      new DepartmentReadDto { Id = d.Department.Id, NameDepartment = d.Department.NameDepartment }));
-            CreateMap<DishUpdateDto, Dish>();
             CreateMap<DishCreateDto, Dish>();
         }
     }

@@ -128,15 +128,15 @@ namespace CateringManagementPlatform.DAL.EF
             Dish beer = new Dish { Id = 3, NameDish = "Пиво", CompositionDish = "Оболонь", Weight = 500, Price = 50, IsArchive = false, DepartmentId = (int)DepartmentName.Bar };
             Dish wine = new Dish { Id = 4, NameDish = "Вино", CompositionDish = "Крым", Weight = 750, Price = 350, IsArchive = false, DepartmentId = (int)DepartmentName.Bar };
             Dish rum = new Dish { Id = 5, NameDish = "Ром", CompositionDish = "Италия", Weight = 750, Price = 700, IsArchive = false, DepartmentId = (int)DepartmentName.Bar };
-            Dish potato = new Dish { Id = 6, NameDish = "Картошка", CompositionDish = "Жаринная", Weight = 200, Price = 50, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen };
+            Dish potato = new Dish { Id = 6, NameDish = "Картошка", CompositionDish = "Жаренная", Weight = 200, Price = 50, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen };
             Dish roast = new Dish { Id = 7, NameDish = "Поджарка", CompositionDish = "Мясо", Weight = 150, Price = 100, IsArchive = false, DepartmentId = (int)DepartmentName.Kitchen };
 
             MenuCategory grill = new MenuCategory { Id = 1, NameCategory = "Мангал" };
             MenuCategory alcohol = new MenuCategory { Id = 2, NameCategory = "Алкоголь" };
             MenuCategory garnish = new MenuCategory { Id = 3, NameCategory = "Гарнир" };
 
-            Menu baseMenu = new Menu { Id = 1, IsActive = false, NameMenu = "Основное" };
-            Menu resMenu = new Menu { Id = 2, IsActive = true, NameMenu = "Резервное" };
+            Menu baseMenu = new Menu { Id = 1, IsActive = true, NameMenu = "Основное" };
+            Menu resMenu = new Menu { Id = 2, IsActive = false, NameMenu = "Резервное" };
 
             modelBuilder.Entity<Dish>().HasData(shashlik, lula, beer, wine, rum, potato, roast);
             modelBuilder.Entity<MenuCategory>().HasData(grill, alcohol, garnish);
@@ -156,7 +156,7 @@ namespace CateringManagementPlatform.DAL.EF
                        .HasForeignKey(pt => pt.MenuId),
                    j =>
                    {
-                       j.HasKey(t => new { t.MenuCategoryId,t.MenuId });
+                       j.HasKey(t => new { t.MenuCategoryId, t.MenuId });
                        j.ToTable("MenuCategoryMenus");
                    }
                );

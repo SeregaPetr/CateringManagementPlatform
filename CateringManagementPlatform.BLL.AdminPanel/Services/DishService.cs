@@ -66,9 +66,13 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             {
                 await TestForDishExistence(dishUpdateDto.NameDish);
             }
-            var dishUpdate = _mapper.Map<Dish>(dishUpdateDto);
 
-            _repository.Dishes.Update(dishUpdate);
+            dish.NameDish = dishUpdateDto.NameDish;
+            dish.CompositionDish = dishUpdateDto.CompositionDish;
+            dish.Weight = dishUpdateDto.Weight;
+            dish.Price = dishUpdateDto.Price;
+            dish.DepartmentId = dishUpdateDto.DepartmentId;
+
             await _repository.SaveAsync();
         }
 
@@ -88,9 +92,12 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             var dish = await _repository.Dishes.GetByIdAsync(id);
             if (dish == null || dish.IsArchive == true)
             {
-                throw new ValidationException("Бдюдо не найдено", "");
+                throw new ValidationException("Блюдо не найдено", "");
             }
-            _repository.Dishes.Delete(dish);
+
+            dish.IsArchive = true;
+            dish.MenuCategoryMenus = null;
+
             await _repository.SaveAsync();
         }
 
