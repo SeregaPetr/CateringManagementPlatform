@@ -36,7 +36,7 @@ namespace CateringManagementPlatform.DAL.Repositories
         public async Task<MenuCategory> GetByIdAsync(int id)
         {
             return await _context.MenuCategories
-                .AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+               .AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public void Update(MenuCategory menuCategory)
