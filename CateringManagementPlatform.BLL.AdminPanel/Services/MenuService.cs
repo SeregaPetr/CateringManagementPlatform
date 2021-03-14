@@ -133,18 +133,25 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
                 throw new ValidationException("Меню не найдено", "");
             }
 
-            menu = _mapper.Map<Menu>(menuUpdateDto);
+            menu.MenuCategoryMenus = new List<MenuCategoryMenu>();
 
-            for (int i = 0; i < menuUpdateDto.MenuCategories.Count(); i++)
+            foreach (var menuCategory in menuUpdateDto.MenuCategories)
             {
-                if (menuUpdateDto.MenuCategories.ToArray()[i].Dishes.Count() > 0)
+                var menuCategoryMenu = new MenuCategoryMenu
                 {
-                    IEnumerable<Dish> dishes = _mapper.Map<IEnumerable<Dish>>(menuUpdateDto.MenuCategories.ToArray()[i].Dishes);
-                    menu.MenuCategoryMenus.Add(new MenuCategoryMenu { Dishes = dishes.ToList() });
+                    MenuId = menu.Id,
+                    MenuCategoryId = menuCategory.Id,
+                };
+
+                menu.MenuCategoryMenus.Add(menuCategoryMenu);
+                await _repository.SaveAsync();
+
+                foreach (var dish in menuCategory.Dishes)
+                {
+                    var dishDB = await _repository.Dishes.GetByIdAsync(dish.Id);
+                    dishDB.MenuCategoryMenus.Add(menuCategoryMenu);
                 }
             }
-
-            _repository.Menu.Update(menu);
             await _repository.SaveAsync();
         }
 
