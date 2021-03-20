@@ -31,10 +31,7 @@ namespace CateringManagementPlatform.Platform
                 options.AddDefaultPolicy(builder =>
                 {
                     builder
-                        //.AllowAnyOrigin()
-                        //.AllowAnyMethod()
-                        //.AllowAnyHeader();
-                        .WithOrigins("http://localhost:4200")
+                        .WithOrigins("https://ngcateringmanagemestatic.z22.web.core.windows.net")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();

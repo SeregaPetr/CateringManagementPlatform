@@ -33,13 +33,9 @@ namespace CateringManagementPlatform.API
                 options.AddDefaultPolicy(builder =>
                 {
                     builder
-                        //.AllowAnyOrigin()
-                        //.AllowAnyMethod()
-                        //.AllowAnyHeader();
-                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyOrigin()
                         .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
+                        .AllowAnyHeader();
                 });
             });
 
