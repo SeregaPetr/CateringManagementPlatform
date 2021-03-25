@@ -19,7 +19,7 @@ namespace CateringManagementPlatform.DAL.Entities
         Open = 1,       //счет открыт     ->user
         Payment,        //оплата          ->user
         Paid,           //счет оплачен
-        Closed,         //счет закрыт     ->
+      //  Closed,         //счет закрыт     ->
         Cancelled       //отмененный заказ
     }
 }

@@ -47,7 +47,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
 
         private async Task<IEnumerable<OrderLineReadDto>> GetOrderLinesForDepartmentAsync(DepartmentName departmentName)
         {
-            //cancelled
             var orderLines = await _repository.OrderLines.GetAllAsync();
             IEnumerable<OrderLine> orderLinesForDepartment = new List<OrderLine>();
 
@@ -94,65 +93,73 @@ namespace CateringManagementPlatform.BLL.Platform.Services
 
         public async Task FreeTable(int tableId)
         {
-            var table = await _repository.Tables.GetByIdAsync(tableId);
-
-            table.IsReservation = false;
-            table.NumberGuests = null;
-            table.Account.Password = PasswordUpdate(6);
-
-            _repository.Tables.Update(table);
-            await _repository.SaveAsync();
-
+            Table table = await ClearTable(tableId);
             await SendToClienLogoutAsync(tableId);
 
-            await CancelOrder(table);
-        }
-
-        private async Task CancelOrder(Table table)
-        {
             var orders = await _repository.Orders.GetAllAsync();
             var unpaidOrdersForTable = orders.FirstOrDefault(o => o.Table.Id == table.Id &&
                (o.StatusOrderId == (int)NameStatusOrder.Open || o.StatusOrderId == (int)NameStatusOrder.Payment));
 
             if (unpaidOrdersForTable != null)
             {
-                unpaidOrdersForTable.StatusOrderId = (int)NameStatusOrder.Closed;
-                unpaidOrdersForTable.CheckClosingTime = DateTime.Now;
-                _repository.Orders.Update(unpaidOrdersForTable);
-
-                unpaidOrdersForTable.OrderLines.ToList().ForEach(ol =>
-                {
-                    ol.StatusOrderLineId = (int)NameStatusOrderLine.Cancelled;
-                    _repository.OrderLines.Update(ol);
-                });
-
-                await _repository.SaveAsync();
-
-                int userId = await GetUserIdAsync(table.Account.Id);
-                var departmentsId = await DepartmentsIdToSendDataAsync(userId);
-
-                await SendToDepartmentAsync(departmentsId);
-                await SendToWaiterAsync();
-                await SendToAdminTablesAsync();
+                await CancelingOrder(table, unpaidOrdersForTable);
             }
+            await SendToAdminTablesAsync();
         }
 
-        private string PasswordUpdate(int length)
+        private async Task CancelingOrder(Table table, DAL.Entities.Order unpaidOrdersForTable)
         {
-            try
+            unpaidOrdersForTable.StatusOrderId = (int)NameStatusOrder.Cancelled;
+            unpaidOrdersForTable.CheckClosingTime = DateTime.Now;
+
+            _repository.Orders.Update(unpaidOrdersForTable);
+
+            unpaidOrdersForTable.OrderLines.ToList().ForEach(ol =>
             {
-                byte[] result = new byte[length];
-                for (int index = 0; index < length; index++)
-                {
-                    result[index] = (byte)new Random().Next(33, 126);
-                }
-                return System.Text.Encoding.ASCII.GetString(result);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
+                ol.StatusOrderLineId = (int)NameStatusOrderLine.Cancelled;
+                _repository.OrderLines.Update(ol);
+            });
+
+            await _repository.SaveAsync();
+
+            int userId = await GetUserIdAsync(table.Account.Id);
+            var departmentsId = await DepartmentsIdToSendDataAsync(userId);
+
+            await SendToDepartmentAsync(departmentsId);
+            await SendToWaiterAsync();
+            await SendOrdersForWaiterAsync();
         }
+
+        private async Task<Table> ClearTable(int tableId)
+        {
+            var table = await _repository.Tables.GetByIdAsync(tableId);
+
+            table.IsReservation = false;
+            table.NumberGuests = null;
+            table.Account.Password = new PasswordLib.Passwor().Creare(5);
+            // table.Account.Password = PasswordUpdate(6);
+
+            _repository.Tables.Update(table);
+            await _repository.SaveAsync();
+            return table;
+        }
+
+        //private string PasswordUpdate(int length)
+        //{
+        //    try
+        //    {
+        //        byte[] result = new byte[length];
+        //        for (int index = 0; index < length; index++)
+        //        {
+        //            result[index] = (byte)new Random().Next(33, 126);
+        //        }
+        //        return System.Text.Encoding.ASCII.GetString(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message, ex);
+        //    }
+        //}
 
         public async Task UpdateOrderLineAsync(OrderLineUpdateDto orderLineUpdateDto)
         {
@@ -270,7 +277,6 @@ namespace CateringManagementPlatform.BLL.Platform.Services
         private async Task SendToClienLogoutAsync(int tableId)
         {
             int accountId = await GetAccountIdForTableId(tableId);
-
             await _hubContext.Clients.All.SendAsync("sentToClienLogout", accountId.ToString());
         }
 
@@ -378,7 +384,7 @@ namespace CateringManagementPlatform.BLL.Platform.Services
         {
             var orders = await _repository.Orders.GetAllAsync();
             var orderGuest = orders.FirstOrDefault(o => o.GuestId == userId && (o.StatusOrderId == (int)NameStatusOrder.Open
-                || o.StatusOrderId == (int)NameStatusOrder.Payment || o.StatusOrderId == (int)NameStatusOrder.Closed));
+                || o.StatusOrderId == (int)NameStatusOrder.Payment || o.StatusOrderId == (int)NameStatusOrder.Cancelled));
 
             return orderGuest?.OrderLines.Select(o => o.Dish.DepartmentId).Distinct();
         }

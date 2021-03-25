@@ -22,12 +22,8 @@ namespace CateringManagementPlatform.DAL.Interfaces
         public IRepository<Order> Orders { get; }
         public IRepository<OrderLine> OrderLines { get; }
         public IRepository<PaymentType> PaymentTypes { get; }
-        //  public IRepository<StatusOrder> Statuses { get; }
         public IRepository<Table> Tables { get; }
 
         Task SaveAsync();
-
-        //public void Commit()
-        //public void Rollback()
     }
 }

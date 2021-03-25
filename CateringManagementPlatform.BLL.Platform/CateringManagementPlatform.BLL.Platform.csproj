@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CateringManagementPlatform.BLL.Order\CateringManagementPlatform.BLL.Order.csproj" />
     <ProjectReference Include="..\CateringManagementPlatform.DAL\CateringManagementPlatform.DAL.csproj" />
+    <ProjectReference Include="..\PasswordLib\PasswordLib.csproj" />
   </ItemGroup>
 
 </Project>

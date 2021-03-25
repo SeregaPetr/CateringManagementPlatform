@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.
 		{71C64063-4B3D-496F-B549-0D54272E6AA5} = {71C64063-4B3D-496F-B549-0D54272E6AA5}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringManagementPlatform.BLL.Auth", "CateringManagementPlatform.BLL.Auth\CateringManagementPlatform.BLL.Auth.csproj", "{43B1CFDD-B17C-4BD9-8D8D-A25F5E532D13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CateringManagementPlatform.BLL.Auth", "CateringManagementPlatform.BLL.Auth\CateringManagementPlatform.BLL.Auth.csproj", "{43B1CFDD-B17C-4BD9-8D8D-A25F5E532D13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PasswordLib", "PasswordLib\PasswordLib.csproj", "{8764D379-33D7-43F5-8E38-E6AF5102D3C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +68,10 @@ Global
 		{43B1CFDD-B17C-4BD9-8D8D-A25F5E532D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43B1CFDD-B17C-4BD9-8D8D-A25F5E532D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43B1CFDD-B17C-4BD9-8D8D-A25F5E532D13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8764D379-33D7-43F5-8E38-E6AF5102D3C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8764D379-33D7-43F5-8E38-E6AF5102D3C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8764D379-33D7-43F5-8E38-E6AF5102D3C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8764D379-33D7-43F5-8E38-E6AF5102D3C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

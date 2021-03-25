@@ -38,7 +38,7 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             return await _context.Accounts
                 .Include(a => a.UserRoles)
-                .AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public void Update(Account account)

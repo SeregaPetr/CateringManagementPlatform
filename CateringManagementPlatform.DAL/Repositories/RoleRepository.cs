@@ -30,7 +30,7 @@ namespace CateringManagementPlatform.DAL.Repositories
         public async Task<IEnumerable<UserRole>> GetAllAsync()
         {
             return await _context.UserRoles
-                .Include(r=>r.Accounts)
+                .Include(r => r.Accounts)
                 .AsNoTracking().ToListAsync();
         }
 
@@ -38,7 +38,7 @@ namespace CateringManagementPlatform.DAL.Repositories
         {
             return await _context.UserRoles
                 .Include(r => r.Accounts)
-                .AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public void Update(UserRole userRole)

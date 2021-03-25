@@ -200,16 +200,6 @@ namespace CateringManagementPlatform.DAL.Repositories
             }
         }
 
-        //public void Commit()
-        //{
-        //    _context.SaveChanges();
-        //}
-
-        //public void Rollback()
-        //{
-        //    _context.Dispose();
-        //}
-
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();

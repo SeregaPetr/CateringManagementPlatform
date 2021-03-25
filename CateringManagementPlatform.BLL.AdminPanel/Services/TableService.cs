@@ -5,6 +5,7 @@ using AutoMapper;
 using CateringManagementPlatform.BLL.AdminPanel.DTO.TableDtos;
 using CateringManagementPlatform.BLL.AdminPanel.Interfaces;
 using CateringManagementPlatform.DAL.Entities;
+using CateringManagementPlatform.DAL.Entities.People;
 using CateringManagementPlatform.DAL.Interfaces;
 using MyValidationException;
 
@@ -35,7 +36,25 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             _repository.Tables.Create(table);
             await _repository.SaveAsync();
 
+            await CreateAccout(table);
+
             return table.Id;
+        }
+
+        private async Task CreateAccout(Table table)
+        {
+            var accaunt = new Account()
+            {
+                Email = $"table{table.NumberTable}@mail.com",
+                Password = new PasswordLib.Passwor().Creare(5),
+                TableId = table.Id,
+            };
+
+            var userRoles = await _repository.UserRoles.GetAllAsync();
+            var userRoleId = userRoles.FirstOrDefault(u => u.RoleName == "User").Id;
+            var userRole = await _repository.UserRoles.GetByIdAsync(userRoleId);
+            userRole.Accounts.Add(accaunt);
+            await _repository.SaveAsync();
         }
 
         private async Task TestForTableExistence(int numberTable)
@@ -57,7 +76,10 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
                 throw new ValidationException("Стол не найден", "");
             }
             table.IsArchive = true;
-            _repository.Tables.Update(table);
+
+            //TODO: акаунт не удаляется
+            //var account = await _repository.Accounts.GetByIdAsync(table.Account.Id);
+            //_repository.Accounts.Delete(account);
             await _repository.SaveAsync();
         }
 
@@ -90,9 +112,13 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             {
                 await TestForTableExistence(tableUpdateDto.NumberTable);
             }
-            table = _mapper.Map<Table>(tableUpdateDto);
 
-            _repository.Tables.Update(table);
+            table.Account.Email = $"table{tableUpdateDto.NumberTable}@mail.com";
+            table.NumberTable = tableUpdateDto.NumberTable;
+            table.NumberGuests = tableUpdateDto.NumberGuests;
+            table.IsReservation = tableUpdateDto.IsReservation;
+            table.CapacityTable = tableUpdateDto.CapacityTable;
+
             await _repository.SaveAsync();
         }
 

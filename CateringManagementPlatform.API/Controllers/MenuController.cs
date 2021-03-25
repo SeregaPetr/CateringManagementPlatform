@@ -23,7 +23,6 @@ namespace CateringManagementPlatform.API.Controllers
 
         // GET: api/menu/active-menu
         [AllowAnonymous]
-        //[Route("active-menu")]
         [HttpGet("active-menu")]
         public async Task<ActionResult<MenuReadDto>> GetActiveMenu()
         {
@@ -51,6 +50,30 @@ namespace CateringManagementPlatform.API.Controllers
             try
             {
                 await _menuService.MakeActiveMenuAsync(menuUpdateDto);
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return Content(ex.Message);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+        // PUT api/menu/create-menu/5
+        [HttpPut("create-menu/{id}")]
+        public async Task<ActionResult> CreateMenu(int id, MenuUpdateDto menuUpdateDto)
+        {
+            if (id != menuUpdateDto?.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _menuService.CreateMenuAsync(menuUpdateDto);
                 return NoContent();
             }
             catch (ValidationException ex)

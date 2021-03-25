@@ -13,6 +13,7 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Interfaces
         Task UpdateAsync(MenuUpdateDto menuUpdateDto);
         Task DeleteAsync(int id);
         Task MakeActiveMenuAsync(MenuUpdateDto menuUpdateDto);
+        Task CreateMenuAsync(MenuUpdateDto menuUpdateDto);
         void Dispose();
     }
 }

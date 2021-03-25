@@ -81,7 +81,6 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             var newActiveMenu = _mapper.Map<Menu>(menuUpdateDto);
 
             _repository.Menu.Update(newActiveMenu);
-
             await _repository.SaveAsync();
         }
 
@@ -105,7 +104,6 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
             }
 
             await TestForMenuExistence(menuCreateDto.NameMenu);
-
             var menu = _mapper.Map<Menu>(menuCreateDto);
 
             _repository.Menu.Create(menu);
@@ -126,6 +124,24 @@ namespace CateringManagementPlatform.BLL.AdminPanel.Services
         }
 
         public async Task UpdateAsync(MenuUpdateDto menuUpdateDto)
+        {
+            var menu = await _repository.Menu.GetByIdAsync(menuUpdateDto.Id);
+            if (menu == null)
+            {
+                throw new ValidationException("Меню не найдено", "");
+            }
+
+            if (!menu.NameMenu.Equals(menuUpdateDto.NameMenu))
+            {
+                await TestForMenuExistence(menuUpdateDto.NameMenu);
+            }
+
+            menu.NameMenu = menuUpdateDto.NameMenu;
+            menu.IsActive = menuUpdateDto.IsActive;
+            await _repository.SaveAsync();
+        }
+
+        public async Task CreateMenuAsync(MenuUpdateDto menuUpdateDto)
         {
             var menu = await _repository.Menu.GetByIdAsync(menuUpdateDto.Id);
             if (menu == null)

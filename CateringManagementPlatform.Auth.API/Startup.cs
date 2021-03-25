@@ -41,7 +41,6 @@ namespace CateringManagementPlatform.Auth.API
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddAuthLibrary(Configuration.GetConnectionString("CateringManagementPlatform"));
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

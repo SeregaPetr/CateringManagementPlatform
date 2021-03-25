@@ -36,12 +36,13 @@ namespace CateringManagementPlatform.DAL.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Table table1 = new Table { Id = 1, NumberTable = 1, IsReservation = false, CapacityTable = 10, NumberGuests = null, IsArchive = false };
-            Table table2 = new Table { Id = 2, NumberTable = 2, IsReservation = false, CapacityTable = 4, NumberGuests = null, IsArchive = false };
-
-
-
-            modelBuilder.Entity<Table>().HasData(table1, table2);
+            modelBuilder.Entity<Table>().HasData(
+                new Table { Id = 1, NumberTable = 1, IsReservation = false, CapacityTable = 10, NumberGuests = null, IsArchive = false },
+                new Table { Id = 2, NumberTable = 2, IsReservation = false, CapacityTable = 4, NumberGuests = null, IsArchive = false },
+                new Table { Id = 3, NumberTable = 3, IsReservation = false, CapacityTable = 6, NumberGuests = null, IsArchive = false },
+                new Table { Id = 4, NumberTable = 4, IsReservation = false, CapacityTable = 5, NumberGuests = null, IsArchive = false },
+                new Table { Id = 5, NumberTable = 5, IsReservation = false, CapacityTable = 2, NumberGuests = null, IsArchive = false }
+                );
 
             modelBuilder.Entity<Account>()
              .HasMany(p => p.UserRoles)
@@ -63,7 +64,10 @@ namespace CateringManagementPlatform.DAL.EF
                     new Account { Id = 4, Email = "waiter1@mail.com", Password = "waiter1" },
                     new Account { Id = 5, Email = "waiter2@mail.com", Password = "waiter2" },
                     new Account { Id = 6, Email = "table1@mail.com", Password = "table1", TableId = 1 },
-                    new Account { Id = 7, Email = "table2@mail.com", Password = "table2", TableId = 2 }
+                    new Account { Id = 7, Email = "table2@mail.com", Password = "table2", TableId = 2 },
+                    new Account { Id = 8, Email = "table3@mail.com", Password = "table3", TableId = 3 },
+                    new Account { Id = 9, Email = "table4@mail.com", Password = "table4", TableId = 4 },
+                    new Account { Id = 10, Email = "table5@mail.com", Password = "table5", TableId = 5 }
                 );
 
             modelBuilder.Entity<Account>().HasMany(p => p.UserRoles).WithMany(p => p.Accounts)
@@ -74,7 +78,10 @@ namespace CateringManagementPlatform.DAL.EF
                    new { AccountsId = 4, UserRolesId = 4 },
                    new { AccountsId = 5, UserRolesId = 4 },
                    new { AccountsId = 6, UserRolesId = 5 },
-                   new { AccountsId = 7, UserRolesId = 5 }
+                   new { AccountsId = 7, UserRolesId = 5 },
+                   new { AccountsId = 8, UserRolesId = 5 },
+                   new { AccountsId = 9, UserRolesId = 5 },
+                   new { AccountsId = 10, UserRolesId = 5 }
                 ));
 
             modelBuilder.Entity<Manager>().HasData(
@@ -86,17 +93,20 @@ namespace CateringManagementPlatform.DAL.EF
                 );
 
             modelBuilder.Entity<Chef>().HasData(
-                   new Chef { Id = 3, FirstName = "Катя", LastName = "Воробей", DepartmentId = (int)DepartmentName.Kitchen, AccountId = 3 }
+                   new Chef { Id = 3, FirstName = "Катя", LastName = "Коробочка", DepartmentId = (int)DepartmentName.Kitchen, AccountId = 3 }
                 );
 
             modelBuilder.Entity<Waiter>().HasData(
                     new Waiter { Id = 4, FirstName = "Настя", LastName = "Дудка", DepartmentId = (int)DepartmentName.Waiters, AccountId = 4, NumberTablesServed = 0 },
-                    new Waiter { Id = 5, FirstName = "Ольга", LastName = "Коробочка", DepartmentId = (int)DepartmentName.Waiters, AccountId = 5, NumberTablesServed = 0 }
+                    new Waiter { Id = 5, FirstName = "Ольга", LastName = "Воробей", DepartmentId = (int)DepartmentName.Waiters, AccountId = 5, NumberTablesServed = 0 }
                 );
 
             modelBuilder.Entity<Guest>().HasData(
-                    new Guest { Id = 6, FirstName = "Admin", LastName = "Admin", AccountId = 6 },
-                    new Guest { Id = 7, FirstName = "Admin", LastName = "Admin", AccountId = 7 }
+                    new Guest { Id = 6, FirstName = "Anonim", LastName = "Anonim", AccountId = 6 },
+                    new Guest { Id = 7, FirstName = "Anonim", LastName = "Anonim", AccountId = 7 },
+                    new Guest { Id = 8, FirstName = "Anonim", LastName = "Anonim", AccountId = 8 },
+                    new Guest { Id = 9, FirstName = "Anonim", LastName = "Anonim", AccountId = 9 },
+                    new Guest { Id = 10, FirstName = "Anonim", LastName = "Anonim", AccountId =10 }
                 );
 
             modelBuilder.Entity<Department>().HasData(
@@ -110,8 +120,7 @@ namespace CateringManagementPlatform.DAL.EF
                     new StatusOrder { Id = 1, NameStatus = "Счет открыт" },
                     new StatusOrder { Id = 2, NameStatus = "Оплата" },
                     new StatusOrder { Id = 3, NameStatus = "Счет оплачен" },
-                    new StatusOrder { Id = 4, NameStatus = "Счет закрыт" },
-                    new StatusOrder { Id = 5, NameStatus = "Заказ отменен" }
+                    new StatusOrder { Id = 4, NameStatus = "Заказ отменен" }
                 );
 
             modelBuilder.Entity<StatusOrderLine>().HasData(
@@ -135,8 +144,8 @@ namespace CateringManagementPlatform.DAL.EF
             MenuCategory alcohol = new MenuCategory { Id = 2, NameCategory = "Алкоголь" };
             MenuCategory garnish = new MenuCategory { Id = 3, NameCategory = "Гарнир" };
 
-            Menu baseMenu = new Menu { Id = 1, IsActive = true, NameMenu = "Основное" };
-            Menu resMenu = new Menu { Id = 2, IsActive = false, NameMenu = "Резервное" };
+            Menu baseMenu = new Menu { Id = 1, IsActive = true, NameMenu = "Основное меню" };
+            Menu resMenu = new Menu { Id = 2, IsActive = false, NameMenu = "Праздничное меню" };
 
             modelBuilder.Entity<Dish>().HasData(shashlik, lula, beer, wine, rum, potato, roast);
             modelBuilder.Entity<MenuCategory>().HasData(grill, alcohol, garnish);

@@ -88,9 +88,11 @@ namespace CateringManagementPlatform.BLL.Order.Services
                 throw new ValidationException("Стол не найден", "");
             }
 
+            table =await _repository.Tables.GetByIdAsync(table.Id);
             table.IsReservation = true;
             table.NumberGuests = numberGuests;
-            _repository.Tables.Update(table);
+            await _repository.SaveAsync();
+
             return table.Id;
         }
 
